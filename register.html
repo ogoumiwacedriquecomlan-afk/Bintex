@@ -141,21 +141,34 @@
     <script src="supabaseClient.js"></script>
     <script src="auth.js"></script>
     <script>
+        // 1. Capture Referral Code from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const refFromUrl = urlParams.get('ref');
+        if (refFromUrl) {
+            sessionStorage.setItem('bintexRef', refFromUrl);
+        }
+
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+
+            // Get Referrer Code
+            const referrerCode = sessionStorage.getItem('bintexRef');
+
             const btn = document.querySelector('button[type="submit"]');
 
             btn.disabled = true;
             btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Création...';
 
-            const result = await Auth.register(name, phone, email, password);
+            // Pass referrerCode
+            const result = await Auth.register(name, phone, email, password, referrerCode);
 
             if (result.success) {
-                // Redirect to dashboard (auto login handles session)
+                // Clear ref
+                sessionStorage.removeItem('bintexRef');
                 window.location.href = 'dashboard.html';
             } else {
                 const err = document.getElementById('errorMsg');

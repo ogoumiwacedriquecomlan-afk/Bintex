@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Bintex</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            padding: 2rem;
+        }
+
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .deposit-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-approve {
+            background: #00fa9a;
+            color: #000;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        h1 {
+            color: var(--gold);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <h1>Administration Bintex</h1>
+        <h3>Demandes de Dépôt en Attente</h3>
+        <div id="depositsList">Chargement...</div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script>
+        async function loadDeposits() {
+            const { data: user } = await supabaseClient.auth.getUser();
+            if (!user) window.location.href = 'login.html';
+
+            // Fetch pending deposits with user details
+            const { data, error } = await supabaseClient
+                .from('deposits')
+                .select(`
+                    *,
+                    profiles:user_id (name, phone, email)
+                `)
+                .eq('status', 'pending')
+                .order('created_at', { ascending: false });
+
+            const list = document.getElementById('depositsList');
+
+            if (error) {
+                list.innerHTML = `<p style="color:red">Erreur: ${error.message}</p>`;
+                console.error(error);
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                list.innerHTML = "<p>Aucune demande en attente.</p>";
+                return;
+            }
+
+            list.innerHTML = data.map(d => `
+                <div class="deposit-card">
+                    <div>
+                        <strong>${d.amount.toLocaleString()} FCFA</strong> - ${d.transaction_id}<br>
+                        <small>${d.profiles.name} (${d.profiles.phone}) - ${new Date(d.created_at).toLocaleString()}</small>
+                    </div>
+                    <button class="btn-approve" onclick="approve('${d.id}')">Valider</button>
+                </div>
+            `).join('');
+        }
+
+        async function approve(id) {
+            if (!confirm('Valider ce dépôt ?')) return;
+
+            const { error } = await supabaseClient.rpc('approve_deposit', { deposit_id: id });
+
+            if (error) {
+                alert("Erreur: " + error.message);
+            } else {
+                alert("Dépôt validé avec succès !");
+                loadDeposits(); // Refresh
+            }
+        }
+
+        loadDeposits();
+    </script>
+</body>
+
+</html>

@@ -5,7 +5,7 @@
 
 const Auth = {
     // Register a new user
-    register: async (name, phone, email, password) => {
+    register: async (name, phone, email, password, referrerCode) => {
         // 1. Sign Up with Supabase Auth
         const { data, error } = await supabaseClient.auth.signUp({
             email: email,
@@ -13,7 +13,8 @@ const Auth = {
             options: {
                 data: {
                     full_name: name,
-                    phone: phone
+                    phone: phone,
+                    referrer_code: referrerCode || null
                 }
             }
         });
@@ -22,8 +23,7 @@ const Auth = {
             return { success: false, message: error.message };
         }
 
-        // Profile creation is now handled by a Supabase Trigger (server-side)
-
+        // Profile creation is handled by Supabase Trigger
         return { success: true };
     },
 

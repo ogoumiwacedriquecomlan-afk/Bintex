@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace - Bintex</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Dashboard Specific Styles */
+        body {
+            padding-top: 80px;
+        }
+
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .user-welcome h2 {
+            margin-bottom: 0;
+        }
+
+        .user-welcome span {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-light);
+            /* Uses #132B45 */
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card.primary {
+            border-color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #8892b0;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            opacity: 0.1;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .panel h3 {
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 1rem;
+        }
+
+        /* Packs Mini */
+        .dash-packs {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .pack-card-mini {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .p-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .p-icon-mini {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .p-body button {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        /* Forms */
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--bg-dark);
+            /* #0B1C2D */
+            color: white;
+        }
+
+        /* Table */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .history-table th {
+            text-align: left;
+            color: #8892b0;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-table td {
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+
+        .text-green {
+            color: #64ffda;
+        }
+
+        .text-red {
+            color: #ff6b6b;
+        }
+
+        .status-badge {
+            background: rgba(100, 255, 218, 0.1);
+            color: #64ffda;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+
+        .active-pack-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: rgba(255, 215, 0, 0.05);
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        /* Deposit Grid */
+        .deposit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .deposit-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .deposit-card:hover {
+            background: rgba(100, 255, 218, 0.1);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .d-amount {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .d-label {
+            font-size: 0.7rem;
+            color: #8892b0;
+        }
+
+        .d-icon {
+            font-size: 1.2rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">BIN<span class="text-gold">TEX</span></a>
+            <div class="nav-links">
+                <button id="logoutBtn" class="btn btn-outline btn-sm">Déconnexion</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dash-header">
+            <div class="user-welcome">
+                <h2>Bienvenue, <span id="uName">...</span></h2>
+                <span id="uId">ID: ...</span>
+            </div>
+            <button class="btn btn-primary" onclick="window.simulateDay()">🔴 Simuler Journée (+20%)</button>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="stats-grid">
+            <!-- CAISSE -->
+            <div class="stat-card primary">
+                <div class="stat-label">Caisse (Solde Principal)</div>
+                <div class="stat-value" id="balMain">0 FCFA</div>
+                <div class="stat-icon"><i class="ph ph-wallet"></i></div>
+                <div style="margin-top: 10px;">
+                    <a href="#depositSection" class="btn btn-sm btn-primary" style="font-size: 0.8rem;">Recharger</a>
+                </div>
+            </div>
+
+            <!-- GAINS -->
+            <div class="stat-card">
+                <div class="stat-label">Solde Gains</div>
+                <div class="stat-value text-gold" id="balGains">0 FCFA</div>
+                <div class="stat-icon"><i class="ph ph-trend-up"></i></div>
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-sm btn-outline" id="withdrawBtn" style="font-size: 0.8rem;">Retirer</button>
+                </div>
+            </div>
+
+            <!-- COMMISSIONS -->
+            <div class="stat-card">
+                <div class="stat-label">Solde Commissions</div>
+                <div class="stat-value" id="balComm">0 FCFA</div>
+                <div class="stat-icon"><i class="ph ph-users-three"></i></div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- LEFT COLUMN -->
+            <div class="main-col">
+                <!-- DEPOSIT -->
+                <div class="panel" id="depositSection">
+                    <h3><i class="ph ph-download-simple"></i> Dépôt Kkiapay</h3>
+                    <p class="mb-2">Sélectionnez un montant pour recharger votre compte via Kkiapay.</p>
+                    <div id="depositGrid" class="deposit-grid">
+                        <!-- Options rendered by JS -->
+                    </div>
+
+                </div>
+
+                <!-- PACK MARKET -->
+                <div class="panel">
+                    <h3><i class="ph ph-storefront"></i> Acheter un Pack</h3>
+                    <div class="dash-packs" id="dashPacksGrid">
+                        <!-- Packs items rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- HISTORY -->
+                <div class="panel">
+                    <h3><i class="ph ph-clock-counter-clockwise"></i> Historique des Transactions</h3>
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Détail</th>
+                                <th>Montant</th>
+                                <th>Date</th>
+                                <th>Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyBody">
+                            <!-- Rows rendered by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="side-col">
+                <!-- ACTIVE PACKS -->
+                <div class="panel">
+                    <h3><i class="ph ph-lightning"></i> Mes Packs Actifs</h3>
+                    <div id="activePacksList">
+                        <!-- Active items -->
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3><i class="ph ph-share-network"></i> Mon Lien Affiliation</h3>
+                    <div class="input-group">
+                        <input type="text" value="https://bintex.app/ref/BIN1234" id="refLinkInput" readonly
+                            style="color: #8892b0;">
+                        <button class="btn btn-sm btn-outline" id="copyRefBtn"><i class="ph ph-copy"></i></button>
+                    </div>
+                    <p style="font-size: 0.8rem; margin-top: 1rem; color: #8892b0;">
+                        Niveau 1: 30% <br>
+                        Niveau 2: 10% <br>
+                        Niveau 3: 5%
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="auth.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

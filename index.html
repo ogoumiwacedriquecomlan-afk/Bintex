@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bintex - Investissement Digital Simple et Rentable</title>
+    <meta name="description"
+        content="Bintex est une plateforme d'investissement digital en Afrique de l'Ouest. Investissez et gagnez 20% par jour.">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Temp fix for images while they generate */
+        .pack-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo">BIN<span class="text-gold">TEX</span></a>
+            <ul class="nav-links">
+                <li><a href="#home">Accueil</a></li>
+                <li><a href="#packs">Nos Packs</a></li>
+                <li><a href="#affiliation">Affiliation</a></li>
+                <li><a href="#invest">Investir</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="login.html" class="btn btn-outline" style="padding: 8px 20px;">Connexion</a></li>
+            </ul>
+            <div class="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero"
+        style="background-image: url('images/bg-hero.png'); background-size: cover; background-position: center;">
+        <div class="overlay"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 25, 47, 0.7);">
+        </div>
+        <div class="container hero-content" style="position: relative; z-index: 2;">
+            <h1>Votre investissement digital, <span class="text-gold">Simple et Rentable</span>.</h1>
+            <p>Rejoignez la révolution financière en Afrique de l'Ouest. Des rendements quotidiens garantis et une
+                plateforme ultra-rapide.</p>
+            <div class="hero-btns">
+                <a href="#packs" class="btn btn-primary">Voir les Packs</a>
+                <a href="#affiliation" class="btn btn-outline">Programme Affiliation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investissement / Packs Section -->
+    <section id="packs" class="section">
+        <div class="container">
+            <h2 class="section-title">Nos Packs d'Investissement</h2>
+            <p class="section-subtitle">Choisissez le pack qui correspond à vos objectifs. <span class="text-gold">20%
+                    de revenus journaliers</span>.</p>
+
+            <div class="packs-grid">
+                <!-- Packs will start with placeholders until images are ready -->
+                <!-- Starter -->
+                <div class="pack-card">
+                    <img src="images/pack-starter.png" alt="Starter Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Starter</h3>
+                        <div class="price">2 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">400 FCFA/jr</span></li>
+                        <li>Retraits rapides</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Basic -->
+                <div class="pack-card">
+                    <img src="images/pack-basic.png" alt="Basic Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Basic</h3>
+                        <div class="price">5 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">1 000 FCFA/jr</span></li>
+                        <li>Retraits rapides</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Bronze -->
+                <div class="pack-card">
+                    <img src="images/pack-bronze.png" alt="Bronze Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Bronze</h3>
+                        <div class="price">15 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">3 000 FCFA/jr</span></li>
+                        <li>Retraits rapides</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Silver -->
+                <div class="pack-card featured">
+                    <div class="badge">Populaire</div>
+                    <img src="images/pack-silver.png" alt="Silver Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Silver</h3>
+                        <div class="price">30 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">6 000 FCFA/jr</span></li>
+                        <li>Support Prioritaire</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Gold -->
+                <div class="pack-card">
+                    <img src="images/pack-gold.png" alt="Gold Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Gold</h3>
+                        <div class="price">45 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">9 000 FCFA/jr</span></li>
+                        <li>Support Prioritaire</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Platinum -->
+                <div class="pack-card">
+                    <img src="images/pack-platinum.png" alt="Platinum Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Platinum</h3>
+                        <div class="price">100 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">20 000 FCFA/jr</span></li>
+                        <li>Support Prioritaire</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Diamond -->
+                <div class="pack-card">
+                    <img src="images/pack-diamond.png" alt="Diamond Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Diamond</h3>
+                        <div class="price">500 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">100 000 FCFA/jr</span></li>
+                        <li>Support VIP</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Elite -->
+                <div class="pack-card">
+                    <img src="images/pack-elite.png" alt="Elite Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Elite</h3>
+                        <div class="price">1 000 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">200 000 FCFA/jr</span></li>
+                        <li>Support VIP</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Master -->
+                <div class="pack-card">
+                    <img src="images/pack-master.png" alt="Master Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Master</h3>
+                        <div class="price">1 500 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">300 000 FCFA/jr</span></li>
+                        <li>Support VIP</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+
+                <!-- Royal -->
+                <div class="pack-card gradient-border">
+                    <img src="images/pack-royal.png" alt="Royal Pack" class="pack-img"
+                        onerror="this.style.display='none'">
+                    <div class="pack-header">
+                        <h3>Royal</h3>
+                        <div class="price">2 000 000 <span class="currency">FCFA</span></div>
+                    </div>
+                    <ul class="pack-features">
+                        <li>Revenu: <span class="text-gold">400 000 FCFA/jr</span></li>
+                        <li>Accès Exclusif</li>
+                    </ul>
+                    <a href="#" class="btn btn-primary btn-block">Investir</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Affiliation Section -->
+    <section id="affiliation" class="section bg-darker">
+        <div class="container">
+            <h2 class="section-title">Programme d'Affiliation à 3 Niveaux</h2>
+            <p class="section-subtitle">Générez des revenus passifs en développant votre réseau.</p>
+
+            <div class="affiliation-grid">
+                <div class="aff-card">
+                    <div class="level">Niveau 1</div>
+                    <div class="percentage">30%</div>
+                    <p>Sur vos filleuls directs</p>
+                </div>
+                <div class="aff-card">
+                    <div class="level">Niveau 2</div>
+                    <div class="percentage">10%</div>
+                    <p>Sur les filleuls de vos filleuls</p>
+                </div>
+                <div class="aff-card">
+                    <div class="level">Niveau 3</div>
+                    <div class="percentage">5%</div>
+                    <p>Sur le 3ème niveau du réseau</p>
+                </div>
+            </div>
+
+            <div class="aff-simulation">
+                <h3>Exemple de gains</h3>
+                <p>Si vous parrainez 10 personnes sur le pack Bronze (15 000 FCFA) :</p>
+                <div class="calculation">
+                    10 x 15 000 x 30% = <span class="text-gold">45 000 FCFA</span> de gains immédiats.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Invest & Withdraw Section -->
+    <section id="invest" class="section">
+        <div class="container">
+            <h2 class="section-title">Investissements & Retraits</h2>
+            <div class="process-grid">
+                <div class="process-step">
+                    <div class="step-icon"><i class="ph ph-device-mobile"></i></div>
+                    <h3>Paiement Mobile</h3>
+                    <p>Investissez simplement via Kkiapay (Mobile Money, Carte Bancaire).</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-icon"><i class="ph ph-lightning"></i></div>
+                    <h3>Validation Instantanée</h3>
+                    <p>Votre compte est activé dès la confirmation du paiement.</p>
+                </div>
+                <div class="process-step">
+                    <div class="step-icon"><i class="ph ph-money"></i></div>
+                    <h3>Retraits 24h</h3>
+                    <p>Recevez vos gains par Mobile Money sous 24h maximum.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-darker">
+        <div class="container contact-container">
+            <div class="contact-info">
+                <h2 class="section-title" style="text-align: left;">Contactez-nous</h2>
+                <p>Besoin d'aide ou d'informations ? Notre équipe est là pour vous.</p>
+                <ul class="contact-list">
+                    <li><span class="icon"><i class="ph ph-envelope-simple"></i></span> <a
+                            href="mailto:support@bintex.vercel.app">support@bintex.vercel.app</a></li>
+                    <li><span class="icon"><i class="ph ph-whatsapp-logo"></i></span> <a
+                            href="https://wa.me/2290165848336" target="_blank">01 65 84 83 36</a></li>
+                </ul>
+            </div>
+            <form class="contact-form">
+                <div class="form-group">
+                    <input type="text" placeholder="Votre Nom" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Votre Email" required>
+                </div>
+                <div class="form-group">
+                    <textarea rows="5" placeholder="Votre Message" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Envoyer le message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">BIN<span class="text-gold">TEX</span></div>
+            <p class="copyright">&copy; 2026 Bintex SARL. Tous droits réservés.</p>
+            <p class="disclaimer">Investir comporte des risques. N'investissez que ce que vous pouvez vous permettre de
+                perdre.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

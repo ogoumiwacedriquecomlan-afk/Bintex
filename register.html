@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Bintex</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            /* Fallback color if image doesn't load */
+            background-color: var(--bg-dark);
+            background-image: url('images/bg-auth.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-card {
+            background: rgba(19, 43, 69, 0.95);
+            /* Matches #132B45 with opacity */
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            text-align: center;
+        }
+
+        .auth-logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 2rem;
+            display: block;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #a8b2d1;
+        }
+
+        .input-icon-wrap {
+            position: relative;
+        }
+
+        .input-icon-wrap i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #FFD700;
+        }
+
+        .form-group input {
+            padding-left: 45px;
+        }
+
+        .auth-footer {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: #FFD700;
+            font-weight: 600;
+        }
+
+        .error-msg {
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-card">
+        <a href="index.html" class="auth-logo">BIN<span class="text-gold">TEX</span></a>
+
+        <div class="error-msg" id="errorMsg"></div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Nom Complet</label>
+                <div class="input-icon-wrap">
+                    <i class="ph ph-user"></i>
+                    <input type="text" id="name" placeholder="John Doe" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Téléphone (MoMo)</label>
+                <div class="input-icon-wrap">
+                    <i class="ph ph-phone"></i>
+                    <input type="text" id="phone" placeholder="01XXXXXXXX" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <div class="input-icon-wrap">
+                    <i class="ph ph-envelope"></i>
+                    <input type="email" id="email" placeholder="votre@email.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <div class="input-icon-wrap">
+                    <i class="ph ph-lock-key"></i>
+                    <input type="password" id="password" placeholder="********" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Créer mon compte</button>
+        </form>
+
+        <div class="auth-footer">
+            Déjà un compte ? <a href="login.html">Se connecter</a>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="supabaseClient.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.querySelector('button[type="submit"]');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Création...';
+
+            const result = await Auth.register(name, phone, email, password);
+
+            if (result.success) {
+                // Redirect to dashboard (auto login handles session)
+                window.location.href = 'dashboard.html';
+            } else {
+                const err = document.getElementById('errorMsg');
+                err.innerText = result.message;
+                err.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = 'Créer mon compte';
+            }
+        });
+    </script>
+</body>
+
+</html>

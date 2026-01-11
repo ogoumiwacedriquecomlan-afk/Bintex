@@ -16,15 +16,43 @@ const Dashboard = {
             }
 
             // 2. Fetch Profile from Supabase
-            const { data: profile, error } = await supabaseClient
+            let { data: profile, error } = await supabaseClient
                 .from('profiles')
                 .select('*')
                 .eq('id', session.user.id)
                 .single();
 
+            // RECOVERY: If profile is missing (e.g. after DB reset), create it.
+            if (error && error.code === 'PGRST116') {
+                console.warn("Profil manquant. Tentative de recréation...");
+
+                const newProfile = {
+                    id: session.user.id,
+                    email: session.user.email,
+                    name: session.user.user_metadata.full_name || 'Utilisateur',
+                    phone: session.user.user_metadata.phone || '',
+                    referral_code: 'BIN' + Math.floor(1000 + Math.random() * 9000),
+                    balance_main: 0,
+                    active_packs: [],
+                    transactions: [],
+                    joined_date: new Date().toISOString()
+                };
+
+                const { error: createErr } = await supabaseClient
+                    .from('profiles')
+                    .insert([newProfile]);
+
+                if (!createErr) {
+                    profile = newProfile;
+                    error = null; // Clear error
+                } else {
+                    console.error("Echec recréation profil", createErr);
+                }
+            }
+
             if (error || !profile) {
                 console.error("Profile load error", error);
-                alert("Erreur chargement profil. Reconnexion...");
+                alert("Erreur chargement profil. Une reconnexion peut être nécessaire.");
                 await supabaseClient.auth.signOut();
                 window.location.href = 'login.html';
                 return;

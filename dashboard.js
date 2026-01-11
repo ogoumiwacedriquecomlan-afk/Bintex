@@ -52,7 +52,8 @@ const Dashboard = {
 
             if (error || !profile) {
                 console.error("Profile load error", error);
-                alert("Erreur chargement profil. Une reconnexion peut être nécessaire.");
+                // DEBUG: Show actual error to user
+                alert("Erreur chargement profil: " + (error?.message || "Erreur inconnue") + "\nCode: " + (error?.code || "N/A"));
                 await supabaseClient.auth.signOut();
                 window.location.href = 'login.html';
                 return;

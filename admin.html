@@ -95,19 +95,22 @@
                 return;
             }
 
-            list.innerHTML = data.map(d => `
+            list.innerHTML = data.map(d => {
+                const profile = d.profiles || { name: 'Utilisateur inconnu', phone: 'N/A' };
+                return `
                 <div class="deposit-card">
                     <div>
                         <strong>${d.amount.toLocaleString()} FCFA</strong> - ${d.transaction_id}<br>
                         <small>Expéditeur: ${d.sender_phone || 'N/A'}</small><br>
-                        <small>Utilisateur: ${d.profiles.name} (${d.profiles.phone}) - ${new Date(d.created_at).toLocaleString()}</small>
+                        <small>Utilisateur: ${profile.name} (${profile.phone}) - ${new Date(d.created_at).toLocaleString()}</small>
                     </div>
                     <div>
                         <button class="btn-approve" onclick="approve('${d.id}')">Valider</button>
                         <button class="btn-reject" onclick="reject('${d.id}')">Rejeter</button>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         async function approve(id) {
@@ -158,17 +161,20 @@
                 return;
             }
 
-            list.innerHTML = data.map(w => `
+            list.innerHTML = data.map(w => {
+                const profile = w.profiles || { name: 'Utilisateur inconnu', phone: 'N/A' };
+                return `
                 <div class="deposit-card" style="border-left: 4px solid #ff6b6b;">
                     <div>
                         <strong>RETRAIT: ${w.amount.toLocaleString()} F</strong> <br>
                         <span style="color:#ff6b6b">Net à payer: ${w.net_amount.toLocaleString()} F</span><br>
                         <span>Vers: ${w.mobile_number}</span><br>
-                        <small>${w.profiles.name} - ${new Date(w.created_at).toLocaleString()}</small>
+                        <small>${profile.name} - ${new Date(w.created_at).toLocaleString()}</small>
                     </div>
                     <button class="btn-approve" onclick="approveWithdrawal('${w.id}')">Confirmer Paiement</button>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         async function approveWithdrawal(id) {

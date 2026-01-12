@@ -99,6 +99,12 @@ const Dashboard = {
         document.getElementById('uName').innerText = user.name || 'Investisseur';
         document.getElementById('uId').innerText = 'ID: ' + (user.referral_code || '---');
 
+        // Show Admin Link if role is admin
+        const adminLink = document.getElementById('adminLink');
+        if (adminLink && user.role === 'admin') {
+            adminLink.style.display = 'inline-flex';
+        }
+
         const fmt = (n) => (n || 0).toLocaleString('fr-FR') + ' FCFA';
 
         document.getElementById('balMain').innerText = fmt(user.balance_main);
@@ -182,6 +188,7 @@ const Dashboard = {
                 }]);
 
             if (error) throw error;
+            console.log("Dépôt inséré avec succès:", { amount, txId });
 
             Dashboard.showSeriousMessage("Demande enregistrée. Nos experts vérifient votre transaction.");
             alert("Demande de recharge soumise avec succès ! Elle sera validée après vérification.");

@@ -58,6 +58,15 @@
 <body>
     <div class="admin-container">
         <h1>Administration Bintex</h1>
+
+        <div id="diagnostics"
+            style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px dashed #8892b0; font-size: 0.85rem;">
+            <h4><i class="ph ph-wrench"></i> Diagnostic Système</h4>
+            <ul id="diagList" style="list-style: none; padding: 0; margin-top: 10px;">
+                <li>Vérification en cours...</li>
+            </ul>
+        </div>
+
         <h3>Demandes de Dépôt (Recharges)</h3>
         <div id="depositsList">Chargement...</div>
 
@@ -69,27 +78,51 @@
     <script src="supabaseClient.js"></script>
     <script>
         async function loadDeposits() {
+            const diagList = document.getElementById('diagList');
             const { data: { user } } = await supabaseClient.auth.getUser();
+
             if (!user) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            // Check if Admin Role
-            const { data: profile } = await supabaseClient
+            // --- DIAGNOSTICS ---
+            let diags = [];
+            diags.push(`<li>✅ Connecté : ${user.email}</li>`);
+
+            // 1. Check Role
+            const { data: profile, error: profErr } = await supabaseClient
                 .from('profiles')
                 .select('role')
                 .eq('id', user.id)
                 .single();
 
-            const isAdmin = profile && profile.role === 'admin';
-            if (!isAdmin) {
-                document.getElementById('depositsList').innerHTML =
-                    `<div style="background: #ff6b6b; color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                        <strong>Attention :</strong> Vous n'êtes pas identifié comme administrateur dans la base de données. 
-                        Les données ne s'afficheront pas. <br>
-                        Email: ${user.email}
-                     </div>`;
+            const role = profile ? profile.role : 'inconnu';
+            diags.push(`<li>${role === 'admin' ? '✅' : '❌'} Rôle : <strong>${role}</strong></li>`);
+
+            // 2. Check is_admin() RPC
+            const { data: isAdminRPC, error: rpcErr } = await supabaseClient.rpc('is_admin');
+            const rpcStatus = rpcErr ? `Erreur (${rpcErr.message})` : (isAdminRPC ? 'Actif (True)' : 'Actif (False)');
+            diags.push(`<li>${isAdminRPC ? '✅' : (rpcErr ? '❌' : '⚠️')} Fonction SQL <code>is_admin()</code> : <strong>${rpcStatus}</strong></li>`);
+
+            // 3. Check Total Deposits Count
+            const { count, error: countErr } = await supabaseClient
+                .from('deposits')
+                .select('*', { count: 'exact', head: true });
+
+            const countMsg = countErr ? `Erreur (${countErr.message})` : `${count} dépôt(s) trouvé(s)`;
+            diags.push(`<li>${countErr ? '❌' : '✅'} Dépôts détectés dans la table : <strong>${countMsg}</strong></li>`);
+
+            if (!isAdminRPC && !rpcErr) {
+                diags.push(`<li style="color:#ff6b6b">⚠️ Le script SQL n'a peut-être pas été appliqué ou votre compte n'est pas admin dans SQL.</li>`);
+            }
+
+            diagList.innerHTML = diags.join('');
+            // --- FIN DIAGNOSTICS ---
+
+            if (role !== 'admin') {
+                document.getElementById('depositsList').innerHTML = `<p style="color:#ff6b6b">Accès refusé. Rôle admin requis.</p>`;
+                return;
             }
 
             // Fetch pending deposits with user details
@@ -105,7 +138,7 @@
             const list = document.getElementById('depositsList');
 
             if (error) {
-                list.innerHTML = `<p style="color:red">Erreur: ${error.message}</p>`;
+                list.innerHTML = `<p style="color:red">Erreur Supabase: ${error.message} (Code: ${error.code})</p>`;
                 console.error(error);
                 return;
             }

@@ -77,7 +77,7 @@ const Dashboard = {
                 await supabaseClient.auth.signOut();
                 window.location.href = 'login.html';
             };
-            document.getElementById('withdrawBtn').onclick = Dashboard.handleWithdraw;
+            // document.getElementById('withdrawBtn').onclick = Dashboard.handleWithdraw; // Moved to inline
             if (document.getElementById('copyRefBtn')) {
                 document.getElementById('copyRefBtn').onclick = Dashboard.copyReferral;
             }
@@ -310,8 +310,58 @@ const Dashboard = {
         }).join('');
     },
 
-    handleWithdraw: () => {
-        alert("Les retraits sont traités automatiquement tous les Lundis.");
+    // --- WITHDRAWALS ---
+    showWithdrawModal: () => {
+        const modal = document.getElementById('withdrawModal');
+        modal.style.display = 'flex';
+
+        // Auto-calculate logic
+        const amtInput = document.getElementById('wAmount');
+        const netDisplay = document.getElementById('wNet');
+        const feeDisplay = document.getElementById('wFee');
+
+        amtInput.oninput = () => {
+            const val = parseFloat(amtInput.value) || 0;
+            const fee = val * 0.10;
+            const net = val - fee;
+            netDisplay.innerText = net.toLocaleString() + ' F';
+            feeDisplay.innerText = fee.toLocaleString() + ' F';
+        };
+
+        // Form Submit
+        document.getElementById('withdrawForm').onsubmit = Dashboard.submitWithdraw;
+    },
+
+    submitWithdraw: async (e) => {
+        e.preventDefault();
+        const amount = parseFloat(document.getElementById('wAmount').value);
+        const phone = document.getElementById('wPhone').value;
+        const btn = e.target.querySelector('button');
+
+        if (!amount || amount < 1000) {
+            alert("Le montant minimum est de 1000 FCFA");
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Traitement...';
+
+        try {
+            const { error } = await supabaseClient.rpc('request_withdrawal', {
+                amount_requested: amount,
+                phone_number: phone
+            });
+
+            if (error) throw error;
+
+            alert("Demande de retrait envoyée avec succès !");
+            window.location.reload();
+
+        } catch (err) {
+            alert("Erreur: " + err.message);
+            btn.disabled = false;
+            btn.innerHTML = 'Valider la demande';
+        }
     },
 
     copyReferral: () => {

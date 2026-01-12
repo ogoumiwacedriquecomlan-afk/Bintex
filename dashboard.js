@@ -70,6 +70,7 @@ const Dashboard = {
             Dashboard.renderHistory();
             Dashboard.renderPacks();
             Dashboard.renderDepositOptions();
+            Dashboard.fetchReferrals();
 
             // Attach Events
             document.getElementById('logoutBtn').onclick = async () => {
@@ -316,6 +317,40 @@ const Dashboard = {
     copyReferral: () => {
         const link = document.getElementById('refLinkInput').value;
         navigator.clipboard.writeText(link).then(() => alert("Lien copié !"));
+    },
+
+    // --- REFERRALS SYSTEM ---
+    fetchReferrals: async () => {
+        const container = document.getElementById('referralsList');
+        if (!container) return;
+
+        try {
+            const { data, error } = await supabaseClient.rpc('get_my_referrals');
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding: 10px; opacity: 0.6;">Aucun filleul pour le moment.</div>';
+                return;
+            }
+
+            container.innerHTML = data.map(ref => `
+                <div style="background: rgba(255,255,255,0.03); padding: 10px; margin-bottom: 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                        <span style="font-weight:600;">${ref.name || 'Utilisateur'}</span>
+                        <span style="font-size:0.8rem; color:#8892b0;">${ref.created_at}</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
+                        <span>Packs: ${ref.active_pack_count}</span>
+                        <span class="text-gold">Investi: ${ref.total_invested.toLocaleString()} F</span>
+                    </div>
+                </div>
+            `).join('');
+
+        } catch (err) {
+            console.error("Referral fetch error", err);
+            container.innerHTML = '<div style="color:#ff6b6b; font-size:0.8rem;">Erreur chargement équipe.</div>';
+        }
     }
 };
 

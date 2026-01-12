@@ -177,25 +177,32 @@ const Dashboard = {
         btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Traitement sécurisé...';
 
         try {
-            const { error } = await supabaseClient
+            console.log("Tentative d'insertion dépôt:", { user_id: Dashboard.currentUser.id, amount, txId, senderNum });
+
+            const { data, error } = await supabaseClient
                 .from('deposits')
                 .insert([{
                     user_id: Dashboard.currentUser.id,
-                    amount: amount,
+                    amount: parseFloat(amount),
                     transaction_id: txId,
                     sender_phone: senderNum,
                     status: 'pending'
-                }]);
+                }])
+                .select();
 
-            if (error) throw error;
-            console.log("Dépôt inséré avec succès:", { amount, txId });
+            if (error) {
+                console.error("Erreur d'insertion Supabase:", error);
+                throw error;
+            }
 
+            console.log("Dépôt inséré avec succès dans la DB:", data);
             Dashboard.showSeriousMessage("Demande enregistrée. Nos experts vérifient votre transaction.");
             alert("Demande de recharge soumise avec succès ! Elle sera validée après vérification.");
             e.target.reset();
             document.getElementById('ussdAction').style.display = 'none';
         } catch (err) {
-            alert("Erreur lors de l'envoi : " + err.message);
+            console.error("Erreur lors de la soumission du dépôt:", err);
+            alert("ERREUR CRITIQUE : " + err.message + "\nCode: " + (err.code || 'N/A') + "\nDétail: " + (err.details || 'Aucun'));
         } finally {
             btn.disabled = false;
             btn.innerHTML = 'Soumettre ma demande';

@@ -65,6 +65,12 @@
             <ul id="diagList" style="list-style: none; padding: 0; margin-top: 10px;">
                 <li>Vérification en cours...</li>
             </ul>
+            <div style="margin-top: 10px; display: flex; gap: 10px;">
+                <button onclick="loadDeposits()" class="btn-approve"
+                    style="padding: 4px 10px; font-size: 0.8rem;">Actualiser Diag</button>
+                <button onclick="testInsert()" class="btn-reject"
+                    style="padding: 4px 10px; font-size: 0.8rem; background: #8892b0;">Test d'insertion (Admin)</button>
+            </div>
         </div>
 
         <h3>Demandes de Dépôt (Recharges)</h3>
@@ -240,6 +246,26 @@
             } else {
                 alert("Retrait marqué comme payé !");
                 loadWithdrawals();
+            }
+        }
+
+        async function testInsert() {
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            const { error } = await supabaseClient
+                .from('deposits')
+                .insert([{
+                    user_id: user.id,
+                    amount: 999,
+                    transaction_id: 'TEST_REF_' + Date.now(),
+                    sender_phone: '00000000',
+                    status: 'pending'
+                }]);
+
+            if (error) {
+                alert("Erreur Test Insert: " + error.message);
+            } else {
+                alert("Insertion test réussie !");
+                loadDeposits();
             }
         }
 

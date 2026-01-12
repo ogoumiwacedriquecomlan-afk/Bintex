@@ -84,9 +84,9 @@ const Dashboard = {
             }
 
             // Manual Deposit Event
-            const depositForm = document.getElementById('depositForm');
-            if (depositForm) {
-                depositForm.onsubmit = Dashboard.submitDeposit;
+            const manualDepositForm = document.getElementById('manualDepositForm');
+            if (manualDepositForm) {
+                manualDepositForm.onsubmit = Dashboard.submitManualDeposit;
             }
 
         } catch (error) {
@@ -110,7 +110,7 @@ const Dashboard = {
         }
     },
 
-    // --- DEPOSIT SYSTEM (KKIAPAY AUTO) ---
+    // --- DEPOSIT SYSTEM (MANUAL USSD) ---
     renderDepositOptions: () => {
         const DEPOSIT_OPTIONS = [
             { amount: 2000 },
@@ -128,84 +128,47 @@ const Dashboard = {
         if (!container) return;
 
         container.innerHTML = DEPOSIT_OPTIONS.map(opt => `
-            <div class="deposit-card" onclick="Dashboard.payWithKkiapay(${opt.amount})" style="cursor:pointer">
-                <div class="d-amount text-gold">${opt.amount.toLocaleString()} F</div>
-                <div class="d-label">Recharger</div>
-                <i class="ph ph-lightning d-icon"></i>
+            <div class="deposit-card" onclick="Dashboard.prepareUSSD(${opt.amount})" style="cursor:pointer; flex: 1; min-width: 80px;">
+                <div class="d-amount text-gold">${(opt.amount / 1000)}k</div>
+                <div class="d-label">Choisir</div>
             </div>
         `).join('');
-
-        // Info message
-        if (!container.nextElementSibling || container.nextElementSibling.className !== 'deposit-info') {
-            const info = document.createElement('div');
-            info.className = 'deposit-info';
-            info.style.marginTop = '10px';
-            info.innerHTML = `<p><i class="ph ph-info"></i> Paiement automatique : Votre solde sera crédité instantanément après confirmation.</p>`;
-            container.parentNode.insertBefore(info, container.nextSibling);
-        }
     },
 
-    payWithKkiapay: (amount) => {
-        if (typeof openKkiapayWidget !== 'function') {
-            alert("Le service de paiement n'est pas prêt. Veuillez rafraîchir la page.");
-            return;
-        }
+    prepareUSSD: (amount) => {
+        const ussdAction = document.getElementById('ussdAction');
+        const ussdBtn = document.getElementById('ussdBtn');
+        const depAmountInput = document.getElementById('depAmount');
 
-        openKkiapayWidget({
-            amount: amount,
-            position: "center",
-            callback: "https://kkiapay-redirect.com", // Keeping their required URL but we handle via addKkiapayListener
-            data: "Recharge Bintex",
-            key: "8e8542b0a8f411f0aff2e5319e520a46",
-            sandbox: true // Set to false for production
-        });
+        if (!ussdAction || !ussdBtn) return;
+
+        // Number: 0165848336
+        // format: tel:*855*1*1*0165848336*0165848336*MONTANT#
+        const ussdCode = `*855*1*1*0165848336*0165848336*${amount}#`;
+        ussdBtn.href = `tel:${ussdCode}`;
+        ussdBtn.innerHTML = `<i class="ph ph-phone-call"></i> Payer ${amount.toLocaleString()} F (USSD)`;
+
+        ussdAction.style.display = 'block';
+        depAmountInput.value = amount;
+
+        // Feedback
+        Dashboard.showSeriousMessage("Excellent choix ! Votre investissement commence ici.");
     },
 
-    initKkiapay: () => {
-        // Listen for Kkiapay events
-        addKkiapayListener('success', async (response) => {
-            console.log("Kkiapay Success:", response);
-            const { transactionId, amount } = response;
-
-            try {
-                // Call Supabase RPC to process payment automatically
-                const { error } = await supabaseClient.rpc('process_kkiapay_payment', {
-                    p_amount: amount,
-                    p_transaction_id: transactionId,
-                    p_user_id: Dashboard.currentUser.id
-                });
-
-                if (error) throw error;
-
-                alert(`Bravo ! Votre compte a été crédité de ${amount.toLocaleString()} FCFA.`);
-                window.location.reload(); // Refresh to update UI and history
-
-            } catch (err) {
-                console.error("Payment sync error:", err);
-                alert("Paiement réussi mais erreur de synchronisation. Contactez le support avec l'ID: " + transactionId);
-            }
-        });
-    },
-
-    handleLinkClick: (amount) => {
-        // Pre-fill amount if input exists
-        const amountInput = document.getElementById('depAmount');
-        if (amountInput) amountInput.value = amount;
-    },
-
-    submitDeposit: async (e) => {
+    submitManualDeposit: async (e) => {
         e.preventDefault();
         const amount = document.getElementById('depAmount').value;
         const txId = document.getElementById('depTxId').value;
+        const senderNum = document.getElementById('senderNum').value;
         const btn = e.target.querySelector('button');
 
-        if (!amount || !txId) {
-            alert("Veuillez remplir le montant et l'ID de transaction.");
+        if (!amount || !txId || !senderNum) {
+            alert("Veuillez remplir tous les champs.");
             return;
         }
 
         btn.disabled = true;
-        btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Envoi...';
+        btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Traitement sécurisé...';
 
         try {
             const { error } = await supabaseClient
@@ -214,19 +177,47 @@ const Dashboard = {
                     user_id: Dashboard.currentUser.id,
                     amount: amount,
                     transaction_id: txId,
+                    sender_phone: senderNum,
                     status: 'pending'
                 }]);
 
             if (error) throw error;
 
-            alert("Dépôt soumis ! Il sera validé sous 24h.");
+            Dashboard.showSeriousMessage("Demande enregistrée. Nos experts vérifient votre transaction.");
+            alert("Demande de recharge soumise avec succès ! Elle sera validée après vérification.");
             e.target.reset();
+            document.getElementById('ussdAction').style.display = 'none';
         } catch (err) {
             alert("Erreur lors de l'envoi : " + err.message);
         } finally {
             btn.disabled = false;
-            btn.innerHTML = 'Confirmer le Dépôt';
+            btn.innerHTML = 'Soumettre ma demande';
         }
+    },
+
+    showSeriousMessage: (msg) => {
+        const toast = document.createElement('div');
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px 25px;
+            color: white;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 10000;
+            font-size: 0.9rem;
+            animation: slideIn 0.3s ease-out;
+        `;
+        toast.innerHTML = `<i class="ph ph-shield-check text-gold"></i> ${msg}`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.5s';
+            setTimeout(() => toast.remove(), 500);
+        }, 4000);
     },
 
 
@@ -249,6 +240,7 @@ const Dashboard = {
         if (!pack) return;
 
         if (Dashboard.currentUser.balance_main < pack.price) {
+            Dashboard.showSeriousMessage("Opportunité manquée ! Rechargez votre solde pour activer ce pack.");
             alert(`Solde insuffisant. Il vous faut ${pack.price.toLocaleString()} FCFA.`);
             document.querySelector('#depositSection').scrollIntoView({ behavior: 'smooth' });
             return;
@@ -268,7 +260,8 @@ const Dashboard = {
             console.error(error);
             alert("Erreur: " + error.message);
         } else {
-            alert("Pack activé avec succès !");
+            Dashboard.showSeriousMessage("Félicitations ! Votre avenir financier commence maintenant.");
+            alert("Pack activé avec succès ! Exploitez la puissance de Bintex.");
             window.location.reload(); // Refresh to show new balance/pack
         }
     },

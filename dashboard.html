@@ -291,14 +291,57 @@
         <div class="dashboard-grid">
             <!-- LEFT COLUMN -->
             <div class="main-col">
-                <!-- DEPOSIT -->
+                <!-- DEPOSIT SECTION -->
                 <div class="panel" id="depositSection">
-                    <h3><i class="ph ph-download-simple"></i> Dépôt Kkiapay</h3>
-                    <p class="mb-2">Sélectionnez un montant pour recharger votre compte via Kkiapay.</p>
-                    <div id="depositGrid" class="deposit-grid">
-                        <!-- Options rendered by JS -->
+                    <h3><i class="ph ph-lightning"></i> Recharger mon Compte</h3>
+                    <p class="mb-2" style="font-size: 0.9rem; color: #8892b0;">
+                        Système sécurisé par validation manuelle. <br>
+                        Effectuez votre transfert via <strong>Moov Money</strong> au numéro unique : <span
+                            class="text-gold" style="font-weight: 700;">01 65 84 83 36</span>
+                    </p>
+
+                    <div id="rechargeSteps" style="margin-bottom: 20px;">
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;" id="depositGrid">
+                            <!-- Amounts rendered by JS -->
+                        </div>
+
+                        <div id="ussdAction"
+                            style="display: none; background: rgba(255, 215, 0, 0.05); padding: 15px; border-radius: 8px; border: 1px dashed var(--primary-color); margin-bottom: 20px;">
+                            <p style="font-size: 0.85rem; margin-bottom: 10px;">Étape 1 : Cliquez sur le bouton
+                                ci-dessous pour payer via USSD.</p>
+                            <a id="ussdBtn" href="#" class="btn btn-primary"
+                                style="width: 100%; text-align: center;">Lancer le Paiement USSD</a>
+                        </div>
                     </div>
 
+                    <div id="confirmationForm" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                        <p style="font-size: 0.85rem; margin-bottom: 15px;">Étape 2 : Une fois le transfert effectué,
+                            remplissez ce formulaire.</p>
+                        <form id="manualDepositForm">
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label style="font-size: 0.8rem; opacity: 0.8;">Numéro de l'expéditeur</label>
+                                <input type="tel" id="senderNum" placeholder="Votre numéro Moov" required
+                                    class="form-control"
+                                    style="width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 5px; color: white;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label style="font-size: 0.8rem; opacity: 0.8;">Montant envoyé (FCFA)</label>
+                                <input type="number" id="depAmount" placeholder="Ex: 5000" required class="form-control"
+                                    style="width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 5px; color: white;">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <label style="font-size: 0.8rem; opacity: 0.8;">Référence de la transaction (ID)</label>
+                                <input type="text" id="depTxId" placeholder="ID de transaction reçu par SMS" required
+                                    class="form-control"
+                                    style="width: 100%; padding: 10px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 5px; color: white;">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Soumettre ma
+                                demande</button>
+                        </form>
+                        <p style="font-size: 0.75rem; color: #8892b0; margin-top: 10px; text-align: center;">
+                            <i class="ph ph-info"></i> Votre solde sera crédité après vérification manuelle
+                            (généralement < 1h). </p>
+                    </div>
                 </div>
 
                 <!-- PACK MARKET -->

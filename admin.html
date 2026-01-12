@@ -38,6 +38,16 @@
             border-radius: 4px;
         }
 
+        .btn-reject {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+
         h1 {
             color: var(--gold);
             margin-bottom: 2rem;
@@ -89,9 +99,13 @@
                 <div class="deposit-card">
                     <div>
                         <strong>${d.amount.toLocaleString()} FCFA</strong> - ${d.transaction_id}<br>
-                        <small>${d.profiles.name} (${d.profiles.phone}) - ${new Date(d.created_at).toLocaleString()}</small>
+                        <small>Expéditeur: ${d.sender_phone || 'N/A'}</small><br>
+                        <small>Utilisateur: ${d.profiles.name} (${d.profiles.phone}) - ${new Date(d.created_at).toLocaleString()}</small>
                     </div>
-                    <button class="btn-approve" onclick="approve('${d.id}')">Valider</button>
+                    <div>
+                        <button class="btn-approve" onclick="approve('${d.id}')">Valider</button>
+                        <button class="btn-reject" onclick="reject('${d.id}')">Rejeter</button>
+                    </div>
                 </div>
             `).join('');
         }
@@ -105,6 +119,19 @@
                 alert("Erreur: " + error.message);
             } else {
                 alert("Dépôt validé avec succès !");
+                loadDeposits(); // Refresh
+            }
+        }
+
+        async function reject(id) {
+            if (!confirm('Rejeter ce dépôt ?')) return;
+
+            const { error } = await supabaseClient.rpc('reject_deposit', { deposit_id: id });
+
+            if (error) {
+                alert("Erreur: " + error.message);
+            } else {
+                alert("Dépôt rejeté.");
                 loadDeposits(); // Refresh
             }
         }

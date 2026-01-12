@@ -42,6 +42,7 @@ create table public.deposits (
   user_id uuid references public.profiles(id) not null,
   amount numeric not null,
   transaction_id text not null,
+  sender_phone text,
   status text default 'pending', -- 'pending', 'approved', 'rejected'
   created_at timestamp with time zone default timezone('utc'::text, now())
 );

@@ -69,8 +69,28 @@
     <script src="supabaseClient.js"></script>
     <script>
         async function loadDeposits() {
-            const { data: user } = await supabaseClient.auth.getUser();
-            if (!user) window.location.href = 'login.html';
+            const { data: { user } } = await supabaseClient.auth.getUser();
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check if Admin Role
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('role')
+                .eq('id', user.id)
+                .single();
+
+            const isAdmin = profile && profile.role === 'admin';
+            if (!isAdmin) {
+                document.getElementById('depositsList').innerHTML =
+                    `<div style="background: #ff6b6b; color: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                        <strong>Attention :</strong> Vous n'êtes pas identifié comme administrateur dans la base de données. 
+                        Les données ne s'afficheront pas. <br>
+                        Email: ${user.email}
+                     </div>`;
+            }
 
             // Fetch pending deposits with user details
             const { data, error } = await supabaseClient

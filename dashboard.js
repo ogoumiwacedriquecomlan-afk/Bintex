@@ -66,12 +66,14 @@ const Dashboard = {
 
             Dashboard.currentUser = profile;
 
+            console.log("Démarrage de l'initialisation UI...");
             Dashboard.renderUI();
             Dashboard.renderHistory();
             Dashboard.renderPacks();
             Dashboard.renderDepositOptions();
-            Dashboard.fetchReferrals();
-            Dashboard.initKkiapay();
+
+            try { Dashboard.fetchReferrals(); } catch (e) { console.error("Referrals failed", e); }
+            // Dashboard.initKkiapay(); // Removed - function is not defined and causes crash
 
             // Attach Events
             document.getElementById('logoutBtn').onclick = async () => {

@@ -47,6 +47,11 @@ const Dashboard = {
                     error = null; // Clear error
                 } else {
                     console.error("Echec recréation profil", createErr);
+                    // DEBUG: Update error message to show why creation failed
+                    error = {
+                        message: "Echec création profil: " + createErr.message,
+                        code: createErr.code || error.code
+                    };
                 }
             }
 

@@ -366,7 +366,45 @@
         </div>
     </div>
 
+    <!-- WITHDRAWAL MODAL -->
+    <div id="withdrawModal" class="modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+        <div class="panel" style="width:90%; max-width:400px; position:relative;">
+            <button onclick="document.getElementById('withdrawModal').style.display='none'"
+                style="position:absolute; top:10px; right:10px; background:none; border:none; color:white; font-size:1.5rem;">&times;</button>
+
+            <h3><i class="ph ph-money"></i> Demande de Retrait</h3>
+            <p style="font-size:0.9rem; margin-bottom:15px; color:#8892b0;">
+                Min: 1000 F | Frais: 10%<br>
+                Le montant sera déduit de vos Gains et Commissions.
+            </p>
+
+            <form id="withdrawForm">
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label style="display:block; margin-bottom:5px; font-size:0.9rem;">Montant (FCFA)</label>
+                    <input type="number" id="wAmount" class="form-control" placeholder="Ex: 5000" required
+                        style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:5px;">
+                </div>
+
+                <div class="form-group" style="margin-bottom:15px;">
+                    <label style="display:block; margin-bottom:5px; font-size:0.9rem;">Numéro Mobile Money</label>
+                    <input type="tel" id="wPhone" class="form-control" placeholder="Ex: 01xxxxxxxx" required
+                        style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:5px;">
+                </div>
+
+                <div
+                    style="background:rgba(255,255,255,0.05); padding:10px; border-radius:5px; margin-bottom:15px; font-size:0.9rem;">
+                    <div>Montant Net: <span id="wNet" class="text-gold">0 F</span></div>
+                    <div style="font-size:0.8rem; opacity:0.7;">Frais: <span id="wFee">0 F</span></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;">Valider la demande</button>
+            </form>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.kkiapay.me/k.js"></script>
     <script src="supabaseClient.js"></script>
     <script src="auth.js"></script>
     <script src="dashboard.js"></script>

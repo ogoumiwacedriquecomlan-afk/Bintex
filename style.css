@@ -414,22 +414,32 @@ footer {
 }
 
 /* Mobile Responsive */
+/* Mobile Responsive */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
     .nav-links {
         display: none;
-        /* Hide for now, JS will toggle */
         position: absolute;
         right: 0px;
         height: 100vh;
         top: 0vh;
-        /* Adjust for fixed navbar */
         background-color: var(--bg-dark);
         flex-direction: column;
         align-items: center;
-        width: 70%;
+        width: 80%;
         transform: translateX(100%);
-        transition: transform 0.5s ease-in;
-        padding-top: 80px;
+        transition: transform 0.3s ease-in-out;
+        padding-top: 100px;
+        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.5);
     }
 
     .nav-links.nav-active {
@@ -438,16 +448,23 @@ footer {
     }
 
     .nav-links li {
+        margin: 2rem 0;
         opacity: 0;
-        margin: 1.5rem 0;
+        /* Javascript handles opacity animation, or we keep it simple */
+        animation: navLinkFade 0.5s ease forwards 0.3s;
     }
 
     .burger {
         display: block;
+        z-index: 2000;
     }
 
     .hero h1 {
         font-size: 2.5rem;
+    }
+
+    .section {
+        padding: 60px 0;
     }
 
     .contact-container {
@@ -456,6 +473,63 @@ footer {
 
     .pack-card.featured {
         transform: none;
+    }
+
+    /* Dashboard Specific Mobile */
+    .stat-card {
+        padding: 1.2rem;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+    }
+
+    .panel {
+        padding: 1rem;
+    }
+
+    .dash-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .dash-header button {
+        width: 100%;
+    }
+
+    .deposit-grid {
+        grid-template-columns: repeat(3, 1fr);
+        /* 3 cols for amounts looks good on mobile */
+    }
+
+    .deposit-card {
+        padding: 8px;
+    }
+
+    .d-amount {
+        font-size: 0.9rem;
+    }
+
+    .dash-packs {
+        grid-template-columns: 1fr 1fr;
+        /* 2 cols for packs */
+    }
+}
+
+@media (max-width: 480px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .deposit-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* 2 cols on very small screens */
+    }
+
+    .dash-packs {
+        grid-template-columns: 1fr;
+        /* 1 col on very small screens */
     }
 }
 

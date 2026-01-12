@@ -71,6 +71,7 @@ const Dashboard = {
             Dashboard.renderPacks();
             Dashboard.renderDepositOptions();
             Dashboard.fetchReferrals();
+            Dashboard.initKkiapay();
 
             // Attach Events
             document.getElementById('logoutBtn').onclick = async () => {
@@ -109,39 +110,81 @@ const Dashboard = {
         }
     },
 
-    // --- DEPOSIT SYSTEM (MANUAL) ---
+    // --- DEPOSIT SYSTEM (KKIAPAY AUTO) ---
     renderDepositOptions: () => {
         const DEPOSIT_OPTIONS = [
-            { amount: 2000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-gg_aYd1h3' },
-            { amount: 5000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-zz67n8my3' },
-            { amount: 15000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-_FcYxkXde' },
-            { amount: 30000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-rpfco8HL3' },
-            { amount: 45000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-ONKWqYvdf' },
-            { amount: 100000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-hrZtM73N_' },
-            { amount: 500000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-SZHcn61K2' },
-            { amount: 1000000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-fYQqlxLlO' },
-            { amount: 1500000, link: 'https://direct.kkiapay.me/37398/BINTEX(Investment)-_O7zuRCKG' }
+            { amount: 2000 },
+            { amount: 5000 },
+            { amount: 15000 },
+            { amount: 30000 },
+            { amount: 45000 },
+            { amount: 100000 },
+            { amount: 500000 },
+            { amount: 1000000 },
+            { amount: 1500000 }
         ];
 
         const container = document.getElementById('depositGrid');
         if (!container) return;
 
         container.innerHTML = DEPOSIT_OPTIONS.map(opt => `
-            <a href="${opt.link}" target="_blank" class="deposit-card" onclick="Dashboard.handleLinkClick(${opt.amount})">
+            <div class="deposit-card" onclick="Dashboard.payWithKkiapay(${opt.amount})" style="cursor:pointer">
                 <div class="d-amount text-gold">${opt.amount.toLocaleString()} F</div>
                 <div class="d-label">Recharger</div>
-                <i class="ph ph-arrow-square-out d-icon"></i>
-            </a>
+                <i class="ph ph-lightning d-icon"></i>
+            </div>
         `).join('');
 
-        // Info message (only append if not already there)
+        // Info message
         if (!container.nextElementSibling || container.nextElementSibling.className !== 'deposit-info') {
             const info = document.createElement('div');
             info.className = 'deposit-info';
             info.style.marginTop = '10px';
-            info.innerHTML = `<p><i class="ph ph-info"></i> Important : Après le paiement, copiez l'ID de transaction reçu par SMS/Mail et validez ci-dessous.</p>`;
+            info.innerHTML = `<p><i class="ph ph-info"></i> Paiement automatique : Votre solde sera crédité instantanément après confirmation.</p>`;
             container.parentNode.insertBefore(info, container.nextSibling);
         }
+    },
+
+    payWithKkiapay: (amount) => {
+        if (typeof openKkiapayWidget !== 'function') {
+            alert("Le service de paiement n'est pas prêt. Veuillez rafraîchir la page.");
+            return;
+        }
+
+        openKkiapayWidget({
+            amount: amount,
+            position: "center",
+            callback: "https://kkiapay-redirect.com", // Keeping their required URL but we handle via addKkiapayListener
+            data: "Recharge Bintex",
+            key: "8e8542b0a8f411f0aff2e5319e520a46",
+            sandbox: true // Set to false for production
+        });
+    },
+
+    initKkiapay: () => {
+        // Listen for Kkiapay events
+        addKkiapayListener('success', async (response) => {
+            console.log("Kkiapay Success:", response);
+            const { transactionId, amount } = response;
+
+            try {
+                // Call Supabase RPC to process payment automatically
+                const { error } = await supabaseClient.rpc('process_kkiapay_payment', {
+                    p_amount: amount,
+                    p_transaction_id: transactionId,
+                    p_user_id: Dashboard.currentUser.id
+                });
+
+                if (error) throw error;
+
+                alert(`Bravo ! Votre compte a été crédité de ${amount.toLocaleString()} FCFA.`);
+                window.location.reload(); // Refresh to update UI and history
+
+            } catch (err) {
+                console.error("Payment sync error:", err);
+                alert("Paiement réussi mais erreur de synchronisation. Contactez le support avec l'ID: " + transactionId);
+            }
+        });
     },
 
     handleLinkClick: (amount) => {

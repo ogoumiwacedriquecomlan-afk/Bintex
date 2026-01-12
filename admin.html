@@ -109,7 +109,56 @@
             }
         }
 
+        async function loadWithdrawals() {
+            const { data, error } = await supabaseClient
+                .from('withdrawals')
+                .select(`
+                    *,
+                    profiles:user_id (name, phone)
+                `)
+                .eq('status', 'pending')
+                .order('created_at', { ascending: false });
+
+            const list = document.getElementById('withdrawalsList');
+
+            if (error) {
+                list.innerHTML = `<p style="color:red">Erreur: ${error.message}</p>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                list.innerHTML = "<p>Aucun retrait en attente.</p>";
+                return;
+            }
+
+            list.innerHTML = data.map(w => `
+                <div class="deposit-card" style="border-left: 4px solid #ff6b6b;">
+                    <div>
+                        <strong>RETRAIT: ${w.amount.toLocaleString()} F</strong> <br>
+                        <span style="color:#ff6b6b">Net à payer: ${w.net_amount.toLocaleString()} F</span><br>
+                        <span>Vers: ${w.mobile_number}</span><br>
+                        <small>${w.profiles.name} - ${new Date(w.created_at).toLocaleString()}</small>
+                    </div>
+                    <button class="btn-approve" onclick="approveWithdrawal('${w.id}')">Confirmer Paiement</button>
+                </div>
+            `).join('');
+        }
+
+        async function approveWithdrawal(id) {
+            if (!confirm('Confirmez-vous avoir envoyé l\'argent ?')) return;
+
+            const { error } = await supabaseClient.rpc('approve_withdrawal', { withdrawal_id: id });
+
+            if (error) {
+                alert("Erreur: " + error.message);
+            } else {
+                alert("Retrait marqué comme payé !");
+                loadWithdrawals();
+            }
+        }
+
         loadDeposits();
+        loadWithdrawals();
     </script>
 </body>
 

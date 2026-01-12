@@ -103,7 +103,7 @@ const Auth = {
             balanceCommissions: parseFloat(data.balance_commissions) || 0,
             activePacks: data.active_packs || [], // JSONB
             transactions: data.transactions || [], // JSONB
-            joinedDate: data.joined_date
+            joinedDate: data.created_at
         };
     },
 
@@ -120,7 +120,7 @@ const Auth = {
             balance_commissions: 0,
             active_packs: [],
             transactions: [],
-            joined_date: new Date().toISOString()
+            created_at: new Date().toISOString()
         };
 
         const { error } = await supabaseClient

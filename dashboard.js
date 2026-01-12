@@ -35,7 +35,7 @@ const Dashboard = {
                     balance_main: 0,
                     active_packs: [],
                     transactions: [],
-                    joined_date: new Date().toISOString()
+                    created_at: new Date().toISOString()
                 };
 
                 const { error: createErr } = await supabaseClient

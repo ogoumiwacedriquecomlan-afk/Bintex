@@ -79,8 +79,12 @@ const Dashboard = {
             .filter(t => t.type === 'gain')
             .reduce((acc, t) => acc + (t.amount || 0), 0);
 
-        document.getElementById('totalInvested').innerText = totalInvested.toLocaleString() + ' F';
-        document.getElementById('totalEarned').innerText = totalEarned.toLocaleString() + ' F';
+        if (document.getElementById('totalInvested')) {
+            document.getElementById('totalInvested').innerText = totalInvested.toLocaleString() + ' F';
+        }
+        if (document.getElementById('totalEarned')) {
+            document.getElementById('totalEarned').innerText = totalEarned.toLocaleString() + ' F';
+        }
 
         if (document.getElementById('spinsCount')) {
             document.getElementById('spinsCount').innerText = user.spins_count || 0;

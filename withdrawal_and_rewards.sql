@@ -156,6 +156,9 @@ BEGIN
   )
   WHERE id = w_record.user_id;
 
+  -- [NEW] Log Activity
+  PERFORM public.log_activity(w_record.user_id, 'retrait', w_record.amount, 'Retrait réussi');
+
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 

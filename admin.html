@@ -78,6 +78,26 @@
 
         <h3>Demandes de Retrait</h3>
         <div id="withdrawalsList">Chargement...</div>
+
+        <h3>Historique Global de la Plateforme</h3>
+        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                <thead>
+                    <tr style="text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <th style="padding: 10px;">Date</th>
+                        <th style="padding: 10px;">Utilisateur</th>
+                        <th style="padding: 10px;">Type</th>
+                        <th style="padding: 10px;">Détail</th>
+                        <th style="padding: 10px;">Montant</th>
+                    </tr>
+                </thead>
+                <tbody id="globalActivityBody">
+                    <tr>
+                        <td colspan="5" style="padding: 10px;">Chargement...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -269,8 +289,38 @@
             }
         }
 
+        async function loadGlobalActivity() {
+            const { data, error } = await supabaseClient
+                .from('global_activity')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(50);
+
+            const tbody = document.getElementById('globalActivityBody');
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="5" style="color:red">Erreur: ${error.message}</td></tr>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5">Aucune activité enregistrée.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = data.map(act => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 10px;">${new Date(act.created_at).toLocaleString()}</td>
+                    <td style="padding: 10px;">${act.user_name}</td>
+                    <td style="padding: 10px;"><strong>${act.type.toUpperCase()}</strong></td>
+                    <td style="padding: 10px;">${act.detail}</td>
+                    <td style="padding: 10px;">${(act.amount || 0).toLocaleString()} F</td>
+                </tr>
+            `).join('');
+        }
+
         loadDeposits();
         loadWithdrawals();
+        loadGlobalActivity();
     </script>
 </body>
 

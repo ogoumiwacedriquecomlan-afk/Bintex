@@ -217,8 +217,117 @@
             gap: 0.5rem;
         }
 
+        /* Ticker Banner */
+        .ticker-wrap {
+            position: fixed;
+            top: 60px;
+            /* Below navbar */
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: rgba(212, 175, 55, 0.1);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            z-index: 999;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticker {
+            display: flex;
+            white-space: nowrap;
+            animation: ticker 40s linear infinite;
+        }
+
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 40px;
+            font-size: 0.8rem;
+            color: var(--text-gold);
+            font-weight: 500;
+        }
+
+        .ticker-item i {
+            margin-right: 8px;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(100%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Lucky Wheel Styles */
+        .wheel-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            border: 10px solid #132B45;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            overflow: hidden;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 5s cubic-bezier(0.1, 0, 0, 1);
+            border-radius: 50%;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: var(--text-gold);
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 10;
+        }
+
+        .spin-btn {
+            display: block;
+            width: 200px;
+            margin: 1rem auto;
+            background: var(--gradient-gold);
+            color: #000;
+            font-weight: 700;
+        }
+
+        .spins-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
         /* Mobile Adjustments */
         @media (max-width: 600px) {
+            body {
+                padding-top: 100px;
+            }
+
+            /* More space for ticker */
+            .ticker-wrap {
+                top: 60px;
+            }
+
+            .wheel-container {
+                width: 260px;
+                height: 260px;
+            }
+
             .stat-value {
                 font-size: 1.4rem;
             }
@@ -248,6 +357,13 @@
             </div>
         </div>
     </nav>
+
+    <!-- GLOBAL ACTIVITY TICKER -->
+    <div class="ticker-wrap">
+        <div class="ticker" id="globalTicker">
+            <div class="ticker-item"><i class="ph ph-trend-up"></i> Bienvenue sur Bintex !</div>
+        </div>
+    </div>
 
     <div class="container">
         <!-- HEADER -->
@@ -451,6 +567,41 @@
                 </div>
             </section>
 
+            <!-- PAGE WHEEL (Roue de la Fortune) -->
+            <section id="page-wheel" class="dash-page">
+                <div class="panel text-center" style="max-width: 500px; margin: 0 auto; text-align: center;">
+                    <h3 class="text-gold"><i class="ph ph-spinner"></i> Roue de la Fortune</h3>
+                    <p class="mb-3">Tentez votre chance ! Gagnez du cash ou des packs d'investissement.</p>
+
+                    <div class="spins-badge">
+                        <i class="ph ph-ticket"></i> <span id="spinsCount">0</span> tours restants
+                    </div>
+
+                    <div class="wheel-container">
+                        <div class="wheel-pointer"></div>
+                        <div class="wheel" id="luckyWheel" style="background: conic-gradient(
+                            #D4AF37 0deg 45deg, 
+                            #132B45 45deg 90deg, 
+                            #D4AF37 90deg 135deg, 
+                            #132B45 135deg 180deg, 
+                            #D4AF37 180deg 225deg, 
+                            #132B45 225deg 270deg, 
+                            #D4AF37 270deg 315deg, 
+                            #132B45 315deg 360deg
+                        );">
+                        </div>
+                    </div>
+
+                    <button class="btn spin-btn" id="spinWheelBtn" onclick="Dashboard.spinWheel()">Lancer la
+                        Roue</button>
+
+                    <div class="alert-box info mt-3">
+                        <i class="ph ph-info"></i>
+                        <p>Obtenez 1 tour gratuit pour chaque filleul qui active un pack de 15 000 F ou plus !</p>
+                    </div>
+                </div>
+            </section>
+
             <!-- PAGE HISTORY -->
             <section id="page-history" class="dash-page">
                 <div class="panel">
@@ -499,6 +650,9 @@
         </button>
         <button class="nav-item" onclick="Dashboard.switchPage('page-shareholders')">
             <i class="ph ph-crown"></i> <span>Actionnaire</span>
+        </button>
+        <button class="nav-item" onclick="Dashboard.switchPage('page-wheel')">
+            <i class="ph ph-spinner"></i> <span>Roue</span>
         </button>
         <button class="nav-item" onclick="Dashboard.switchPage('page-history')">
             <i class="ph ph-clock"></i> <span>Histoire</span>

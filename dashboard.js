@@ -41,6 +41,7 @@ const Dashboard = {
             Dashboard.fetchTeamReferrals();
             Dashboard.processRewards();
             Dashboard.checkShareholderBonuses();
+            Dashboard.fetchGlobalActivity(); // [NEW]
             Dashboard.promptWhatsApp(); // Initial prompt
 
             // Attach Global Events
@@ -80,6 +81,10 @@ const Dashboard = {
 
         document.getElementById('totalInvested').innerText = totalInvested.toLocaleString() + ' F';
         document.getElementById('totalEarned').innerText = totalEarned.toLocaleString() + ' F';
+
+        if (document.getElementById('spinsCount')) {
+            document.getElementById('spinsCount').innerText = user.spins_count || 0;
+        }
     },
 
     // --- NAVIGATION ---
@@ -113,22 +118,36 @@ const Dashboard = {
         }
     },
 
-    // --- REWARDS SYSTEM ---
-    processRewards: async () => {
+    // --- GLOBAL ACTIVITY ---
+    fetchGlobalActivity: async () => {
         try {
-            const { data, error } = await supabaseClient.rpc('process_daily_rewards');
+            const { data, error } = await supabaseClient
+                .from('global_activity')
+                .select('*')
+                .order('created_at', { ascending: false })
+                .limit(20);
+
             if (error) throw error;
 
-            if (data.status === 'success') {
-                Dashboard.showSeriousMessage(`Gains reçus : +${data.amount} FCFA (${data.days_processed} jour(s)) !`);
-                // Reload profile data to get new balance
-                const { data: updatedProf } = await supabaseClient.from('profiles').select('*').eq('id', Dashboard.currentUser.id).single();
-                Dashboard.currentUser = updatedProf;
-                Dashboard.renderUI();
-                Dashboard.renderHistory();
+            const ticker = document.getElementById('globalTicker');
+            if (ticker && data.length > 0) {
+                ticker.innerHTML = data.map(act => {
+                    let icon = 'ph-trend-up';
+                    if (act.type === 'achat') icon = 'ph-package';
+                    if (act.type === 'retrait') icon = 'ph-hand-coins';
+                    if (act.type === 'gain_roue') icon = 'ph-star';
+
+                    return `
+                        <div class="ticker-item">
+                            <i class="ph ${icon}"></i> 
+                            ${act.user_name} a ${act.type === 'achat' ? 'activé un' : act.type === 'retrait' ? 'effectué un' : act.type === 'gain_roue' ? 'gagné un' : 'fait un'} 
+                            ${act.detail.includes('Pack') ? act.detail : (act.amount + ' F')}
+                        </div>
+                    `;
+                }).join('');
             }
         } catch (e) {
-            console.error("Rewards system error", e);
+            console.error("Ticker error", e);
         }
     },
 
@@ -413,6 +432,80 @@ const Dashboard = {
                 if (statusEl) statusEl.innerHTML = '<i class="ph ph-check-circle"></i>';
             }
         });
+    },
+
+    // --- LUCKY WHEEL ---
+    spinWheel: async () => {
+        if (Dashboard.isSpinning) return;
+        if ((Dashboard.currentUser.spins_count || 0) <= 0) {
+            alert("Vous n'avez plus de tours ! Parrainez des amis investissant 15 000 F ou plus pour en obtenir.");
+            return;
+        }
+
+        Dashboard.isSpinning = true;
+        const btn = document.getElementById('spinWheelBtn');
+        btn.disabled = true;
+
+        try {
+            const { data, error } = await supabaseClient.rpc('spin_wheel');
+            if (error) throw error;
+
+            const wheel = document.getElementById('luckyWheel');
+            const randVal = data.result_index;
+
+            // Calculate segment index (8 segments of 45deg)
+            let segmentIndex = 0;
+            if (randVal <= 600) segmentIndex = 0;
+            else if (randVal <= 900) segmentIndex = 1;
+            else if (randVal <= 970) segmentIndex = 2;
+            else if (randVal <= 990) segmentIndex = 3;
+            else if (randVal <= 997) segmentIndex = 4;
+            else if (randVal === 998) segmentIndex = 5;
+            else if (randVal === 999) segmentIndex = 6;
+            else segmentIndex = 7;
+
+            // Rotation logic: segment center + full rotations
+            const baseRotationPerSegment = 45;
+            const extraRotations = 5 * 360; // 5 full turns
+            const targetRotation = extraRotations + (segmentIndex * baseRotationPerSegment) + (baseRotationPerSegment / 2);
+
+            // Note: Conic gradient starts at top (0deg). Pointer is at top.
+            // If we want the pointer to point to segment 0, we need to rotate wheel by 0.
+            // Since the wheel rotates clockwise, we subtract the angle.
+            wheel.style.transform = `rotate(-${targetRotation}deg)`;
+
+            setTimeout(async () => {
+                let msg = "";
+                if (data.prize_type === 'cash') {
+                    msg = data.prize_amount > 0 ? `Bravo ! Vous avez gagné ${data.prize_amount} FCFA !` : "Dommage... Essayez encore !";
+                } else {
+                    msg = `INCROYABLE ! Vous avez gagné un ${data.prize_pack} d'une valeur de ${data.prize_amount} F !`;
+                }
+
+                Dashboard.showSeriousMessage(msg);
+
+                // Refresh Profile
+                const { data: updatedProf } = await supabaseClient.from('profiles').select('*').eq('id', Dashboard.currentUser.id).single();
+                Dashboard.currentUser = updatedProf;
+                Dashboard.renderUI();
+                Dashboard.renderHistory();
+                Dashboard.renderPacks();
+
+                Dashboard.isSpinning = false;
+                btn.disabled = false;
+                // Reset wheel for next spin without transition
+                setTimeout(() => {
+                    wheel.style.transition = 'none';
+                    wheel.style.transform = 'rotate(0deg)';
+                    setTimeout(() => wheel.style.transition = 'transform 5s cubic-bezier(0.1, 0, 0, 1)', 50);
+                }, 1000);
+            }, 5500);
+
+        } catch (e) {
+            alert(e.message);
+            Dashboard.isSpinning = false;
+            btn.disabled = false;
+        }
     }
 };
 

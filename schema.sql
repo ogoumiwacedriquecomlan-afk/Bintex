@@ -130,6 +130,9 @@ begin
       )
   where id = d_record.user_id;
 
+  -- [NEW] Log Activity
+  perform public.log_activity(d_record.user_id, 'dépôt', d_record.amount, 'Dépôt validé');
+
 end;
 $$ language plpgsql security definer;
 
@@ -174,6 +177,9 @@ begin
       )
   where id = auth.uid();
 
+  -- [NEW] Log Activity
+  perform public.log_activity(auth.uid(), 'achat', pack_price, 'Achat Pack ' || pack_name);
+
   -- 2. DISTRIBUTION COMMISSION (3 NIVEAUX)
   
   -- Niveau 1 (30%)
@@ -190,6 +196,11 @@ begin
           'status', 'Reçu'
         )
     where id = upline1;
+
+    -- [NEW] Award Lucky Spin if pack >= 15000
+    if pack_price >= 15000 then
+      update public.profiles set spins_count = spins_count + 1 where id = upline1;
+    end if;
 
     -- Niveau 2 (10%)
     select referrer_id into upline2 from public.profiles where id = upline1;

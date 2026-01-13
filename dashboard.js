@@ -107,8 +107,8 @@ const Dashboard = {
             }
         });
 
-        // WhatsApp Prompt on page change
-        Dashboard.promptWhatsApp();
+        // WhatsApp Prompt removed from here (only in init)
+
         // Silent rewards check
         Dashboard.processRewards();
     },
@@ -270,7 +270,11 @@ const Dashboard = {
             { name: 'Bronze', price: 15000, daily: 3000, img: 'images/pack-bronze.png' },
             { name: 'Silver', price: 30000, daily: 6000, img: 'images/pack-silver.png' },
             { name: 'Gold', price: 45000, daily: 9000, img: 'images/pack-gold.png' },
-            { name: 'Platinum', price: 100000, daily: 20000, img: 'images/pack-platinum.png' }
+            { name: 'Platinum', price: 100000, daily: 20000, img: 'images/pack-platinum.png' },
+            { name: 'Diamond', price: 250000, daily: 50000, img: 'images/pack-platinum.png' },
+            { name: 'Master', price: 500000, daily: 100000, img: 'images/pack-platinum.png' },
+            { name: 'Elite', price: 1000000, daily: 200000, img: 'images/pack-platinum.png' },
+            { name: 'Ultimate', price: 2000000, daily: 400000, img: 'images/pack-platinum.png' }
         ];
 
         const grid = document.getElementById('dashPacksGrid');
@@ -330,6 +334,22 @@ const Dashboard = {
 
         if (error) alert(error.message);
         else window.location.reload();
+    },
+
+    processRewards: async () => {
+        try {
+            const { data, error } = await supabaseClient.rpc('process_daily_rewards');
+            if (error) throw error;
+            if (data && data.status === 'success') {
+                console.log("Gains distribués:", data);
+                // Refresh profile to show new balance (silent update)
+                const { data: updatedProf } = await supabaseClient.from('profiles').select('*').eq('id', Dashboard.currentUser.id).single();
+                Dashboard.currentUser = updatedProf;
+                Dashboard.renderUI();
+            }
+        } catch (e) {
+            console.error("Erreur distribution gains", e);
+        }
     },
 
     // --- WITHDRAWALS ---

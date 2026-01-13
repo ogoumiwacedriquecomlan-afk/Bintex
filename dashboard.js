@@ -204,12 +204,26 @@ const Dashboard = {
         const opts = [2000, 5000, 15000, 30000, 45000, 100000, 500000, 1000000, 1500000];
         const grid = document.getElementById('depositGrid');
         if (!grid) return;
-        grid.innerHTML = opts.map(amt => `
-            <div class="deposit-card" onclick="Dashboard.prepareUSSD(${amt})">
-                <div class="d-amount text-gold">${(amt / 1000)}k</div>
-                <div class="d-label">Choisir</div>
-            </div>
-        `).join('');
+        grid.innerHTML = `
+            <table class="minimal-table">
+                <thead>
+                    <tr>
+                        <th>Montant</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${opts.map(amt => `
+                        <tr>
+                            <td class="text-gold" style="font-weight:700;">${amt.toLocaleString()} F</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline" style="padding: 4px 12px;" onclick="Dashboard.prepareUSSD(${amt})">Choisir</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
     },
 
     prepareUSSD: (amount) => {
@@ -261,21 +275,33 @@ const Dashboard = {
 
         const grid = document.getElementById('dashPacksGrid');
         if (!grid) return;
-        grid.innerHTML = PACKS.map(p => `
-            <div class="pack-card-mini">
-                <div class="p-head">
-                    <img src="${p.img}" onerror="this.src='images/pack-starter.png'" class="p-icon-mini">
-                    <div>
-                        <h4>${p.name}</h4>
-                        <span class="text-gold">${p.price.toLocaleString()} F</span>
-                    </div>
-                </div>
-                <div class="p-body">
-                    <p>Gain: ${p.daily.toLocaleString()} F/j</p>
-                    <button class="btn btn-sm btn-primary" onclick="Dashboard.buyPack('${p.name}', ${p.price}, ${p.daily})">Activer</button>
-                </div>
-            </div>
-        `).join('');
+        grid.innerHTML = `
+            <table class="minimal-table">
+                <thead>
+                    <tr>
+                        <th>Pack</th>
+                        <th>Prix</th>
+                        <th>Gain/j</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${PACKS.map(p => `
+                        <tr>
+                            <td style="display:flex; align-items:center; gap:8px;">
+                                <img src="${p.img}" onerror="this.src='images/pack-starter.png'" class="p-icon-mini-v2">
+                                <span>${p.name}</span>
+                            </td>
+                            <td>${p.price.toLocaleString()} F</td>
+                            <td class="text-gold">+${p.daily.toLocaleString()} F</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="Dashboard.buyPack('${p.name}', ${p.price}, ${p.daily})">Activer</button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
 
         const activeList = document.getElementById('activePacksList');
         const active = Dashboard.currentUser.active_packs || [];

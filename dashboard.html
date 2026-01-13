@@ -396,6 +396,47 @@
             padding: 8px 15px;
             font-size: 0.8rem;
         }
+
+        /* Minimalist Tables */
+        .minimal-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            color: #fff;
+        }
+
+        .minimal-table tr {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .minimal-table th {
+            text-align: left;
+            padding: 10px 8px;
+            color: var(--text-gold);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+
+        .minimal-table td {
+            padding: 10px 8px;
+            vertical-align: middle;
+        }
+
+        .p-icon-mini-v2 {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .text-green {
+            color: #4ade80;
+        }
+
+        .text-red {
+            color: #f87171;
+        }
     </style>
 </head>
 
@@ -508,8 +549,9 @@
             <section id="page-recharge" class="dash-page">
                 <div class="panel">
                     <h3><i class="ph ph-lightning"></i> Recharger</h3>
-                    <p class="mb-3">Moov Money : <strong class="text-gold">01 65 84 83 36</strong></p>
-                    <div id="depositGrid" class="deposit-grid mb-3"></div>
+                    <p class="mb-3" style="font-size: 0.9rem;">Moov Money : <strong class="text-gold">01 65 84 83
+                            36</strong></p>
+                    <div id="depositGrid" class="mb-4"></div>
                     <form id="manualDepositForm">
                         <div class="form-group mb-2">
                             <label>Numéro expéditeur</label>

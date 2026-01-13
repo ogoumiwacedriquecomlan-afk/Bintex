@@ -40,7 +40,8 @@ const Dashboard = {
             Dashboard.renderHistory();
             Dashboard.fetchTeamReferrals();
             Dashboard.processRewards();
-            Dashboard.checkShareholderBonuses(); // [NEW]
+            Dashboard.checkShareholderBonuses();
+            Dashboard.promptWhatsApp(); // Initial prompt
 
             // Attach Global Events
             document.getElementById('logoutBtn').onclick = () => supabaseClient.auth.signOut().then(() => window.location.href = 'login.html');
@@ -89,61 +90,46 @@ const Dashboard = {
         const target = document.getElementById(pageId);
         if (target) target.classList.add('active');
 
-        // Update Nav Menu UI
+        // Update Nav Menu UI (Bottom Nav)
         document.querySelectorAll('.nav-item').forEach(btn => {
             btn.classList.remove('active');
-            if (btn.getAttribute('onclick').includes(pageId)) btn.classList.add('active');
+            if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(pageId)) {
+                btn.classList.add('active');
+            }
         });
+
+        // WhatsApp Prompt on page change
+        Dashboard.promptWhatsApp();
+        // Silent rewards check
+        Dashboard.processRewards();
     },
 
-    // --- REWARDS & TIMER ---
+    promptWhatsApp: () => {
+        // The user asked for a prompt "à chaque changement de page ou d'actualisation"
+        // We use confirm to be interactive as requested.
+        const join = confirm("BINTEX INFO: Rejoignez notre canal WhatsApp Officiel pour recevoir vos paiements et infos en temps réel ! \n\nCliquez sur OK pour rejoindre maintenant.");
+        if (join) {
+            window.open("https://whatsapp.com/channel/0029VbC9xOoLo4hjAZYTlL3S", "_blank");
+        }
+    },
+
+    // --- REWARDS SYSTEM ---
     processRewards: async () => {
         try {
             const { data, error } = await supabaseClient.rpc('process_daily_rewards');
             if (error) throw error;
 
             if (data.status === 'success') {
-                Dashboard.showSeriousMessage(`Gain journalier reçu : +${data.amount} FCFA`);
+                Dashboard.showSeriousMessage(`Gains reçus : +${data.amount} FCFA (${data.days_processed} jour(s)) !`);
                 // Reload profile data to get new balance
                 const { data: updatedProf } = await supabaseClient.from('profiles').select('*').eq('id', Dashboard.currentUser.id).single();
                 Dashboard.currentUser = updatedProf;
                 Dashboard.renderUI();
                 Dashboard.renderHistory();
             }
-
-            // Start/Update Timer
-            Dashboard.startTimer();
         } catch (e) {
             console.error("Rewards system error", e);
         }
-    },
-
-    startTimer: () => {
-        if (Dashboard.rewardInterval) clearInterval(Dashboard.rewardInterval);
-
-        const timerSpan = document.getElementById('timeRemaining');
-        const lastRewardAt = new Date(Dashboard.currentUser.last_reward_at).getTime();
-        const nextRewardAt = lastRewardAt + (24 * 60 * 60 * 1000);
-
-        const update = () => {
-            const now = new Date().getTime();
-            const diff = nextRewardAt - now;
-
-            if (diff <= 0) {
-                timerSpan.innerText = "Disponible !";
-                Dashboard.processRewards(); // Re-trigger check
-                return;
-            }
-
-            const h = Math.floor(diff / (1000 * 60 * 60));
-            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-            timerSpan.innerText = `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-        };
-
-        update();
-        Dashboard.rewardInterval = setInterval(update, 1000);
     },
 
     // --- TEAM REFERRALS (LEVELS) ---

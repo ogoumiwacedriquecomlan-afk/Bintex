@@ -162,7 +162,8 @@ begin
         'name', pack_name,
         'price', pack_price,
         'dailyReturn', pack_daily,
-        'date', to_char(now(), 'DD/MM/YYYY')
+        'date', to_char(now(), 'DD/MM/YYYY'),
+        'purchased_at', now() -- [NEW] Precise timestamp
       ),
       transactions = transactions || jsonb_build_object(
         'type', 'achat',

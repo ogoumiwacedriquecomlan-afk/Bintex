@@ -159,49 +159,64 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 5. RPC: Process Daily Rewards (Autonome)
+-- 5. RPC: Process Daily Rewards (Autonome avec Catch-up)
 CREATE OR REPLACE FUNCTION public.process_daily_rewards()
 RETURNS JSON AS $$
 DECLARE
   prof record;
   pack record;
-  total_gain numeric := 0;
-  total_users_processed int := 0;
+  total_daily_return numeric := 0;
+  total_gain_to_award numeric := 0;
+  days_passed int := 0;
   now_ts timestamp with time zone := now();
+  last_reward timestamp with time zone;
 BEGIN
-  -- On ne peut process que son propre reward via le dashboard (Sécurité/Limitation client-side)
+  -- Récupérer profil
   SELECT * INTO prof FROM public.profiles WHERE id = auth.uid();
   
-  -- Si moins de 24h depuis le dernier reward, on sort
-  IF prof.last_reward_at > (now_ts - interval '24 hours') THEN
-    RETURN jsonb_build_object('status', 'waiting', 'next_reward_in', extract(epoch from (prof.last_reward_at + interval '24 hours' - now_ts)));
+  last_reward := prof.last_reward_at;
+  
+  -- Calculer combien de jours pleins (24h) sont passés depuis last_reward_at
+  days_passed := floor(extract(epoch from (now_ts - last_reward)) / 86400)::int;
+
+  -- Si moins d'un jour (24h) de retard, on ne fait rien (waiting)
+  IF days_passed < 1 THEN
+    RETURN jsonb_build_object(
+      'status', 'waiting', 
+      'next_reward_in', extract(epoch from (last_reward + interval '1 day' - now_ts))
+    );
   END IF;
 
-  -- Calculer les gains journaliers basés sur les packs actifs
+  -- Calculer le rendement quotidien total des packs actifs
   FOR pack IN SELECT * FROM jsonb_array_elements(prof.active_packs) LOOP
-    total_gain := total_gain + (pack->>'dailyReturn')::numeric;
+    total_daily_return := total_daily_return + (pack->>'dailyReturn')::numeric;
   END LOOP;
 
-  IF total_gain > 0 THEN
-    -- Créditer Gains
+  -- Gain total = Rendement quotidien x Nombre de jours manqués
+  total_gain_to_award := total_daily_return * days_passed;
+
+  IF total_gain_to_award > 0 THEN
+    -- Créditer Gains et mettre à jour last_reward_at proportionnellement
     UPDATE public.profiles
-    SET balance_gains = balance_gains + total_gain,
-        last_reward_at = now_ts,
+    SET balance_gains = balance_gains + total_gain_to_award,
+        last_reward_at = last_reward + (days_passed * interval '1 day'),
         transactions = transactions || jsonb_build_object(
           'type', 'gain',
-          'amount', total_gain,
-          'detail', 'Revenus journaliers (Packs Actifs)',
+          'amount', total_gain_to_award,
+          'detail', 'Gains cumulés (' || days_passed || ' jour(s))',
           'date', to_char(now_ts, 'DD/MM/YYYY HH24:MI'),
           'status', 'Validé'
         )
     WHERE id = auth.uid();
     
-    RETURN jsonb_build_object('status', 'success', 'amount', total_gain);
+    RETURN jsonb_build_object(
+      'status', 'success', 
+      'amount', total_gain_to_award, 
+      'days_processed', days_passed
+    );
   ELSE
-    -- Pas de pack = On reset quand même le timer pour éviter les calls inutiles ? 
-    -- Non, on laisse le timer tel quel, mais l'utilisateur ne recevra rien.
-    -- On met à jour last_reward_at pour dire "On a vérifié aujourd'hui"
-    UPDATE public.profiles SET last_reward_at = now_ts WHERE id = auth.uid();
+    -- Pas de pack = On avance quand même la date pour éviter les checks inutiles
+    UPDATE public.profiles SET last_reward_at = last_reward + (days_passed * interval '1 day') WHERE id = auth.uid();
     RETURN jsonb_build_object('status', 'no_packs');
   END IF;
 END;

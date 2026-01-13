@@ -12,23 +12,32 @@
     <style>
         /* Dashboard Specific Styles */
         body {
-            padding-top: 80px;
+            padding-top: 70px;
+            padding-bottom: 85px;
+            /* Space for bottom nav */
+            background: var(--bg-dark);
+            color: white;
+            font-family: 'Outfit', sans-serif;
         }
 
-        /* Navigation Menu */
+        /* Bottom Navigation Menu */
         .dash-nav {
-            display: flex;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
             background: var(--bg-light);
-            padding: 5px;
-            border-radius: 12px;
-            gap: 5px;
-            overflow-x: auto;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
         }
 
         .nav-item {
             flex: 1;
-            padding: 12px;
+            padding: 5px;
             border: none;
             background: transparent;
             color: #8892b0;
@@ -36,29 +45,21 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
-            border-radius: 8px;
+            gap: 4px;
             transition: var(--transition);
-            min-width: 80px;
         }
 
         .nav-item i {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
         }
 
         .nav-item span {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 500;
         }
 
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-white);
-        }
-
         .nav-item.active {
-            background: var(--gradient-gold);
-            color: var(--bg-dark);
+            color: var(--primary-color);
         }
 
         /* Pages */
@@ -83,20 +84,6 @@
             }
         }
 
-        /* Timer Badge */
-        .timer-badge {
-            background: rgba(212, 175, 55, 0.1);
-            border: 1px solid var(--primary-color);
-            padding: 8px 15px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            color: var(--primary-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 600;
-        }
-
         /* Stats Mini */
         .stat-mini {
             background: rgba(255, 255, 255, 0.03);
@@ -118,90 +105,6 @@
             font-size: 1.2rem;
             font-weight: 700;
             color: var(--text-white);
-        }
-
-        /* Team / Leveled Referrals */
-        .level-group {
-            margin-bottom: 2rem;
-        }
-
-        .level-group h4 {
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .ref-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1rem;
-        }
-
-        .ref-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* About Section */
-        .about-content p {
-            margin-bottom: 1rem;
-            font-size: 1rem;
-            color: var(--text-light);
-        }
-
-        .about-features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .feat-item {
-            display: flex;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 1.5rem;
-            border-radius: 8px;
-        }
-
-        .feat-item i {
-            font-size: 2rem;
-            color: var(--primary-color);
-        }
-
-        .feat-item h5 {
-            margin-bottom: 5px;
-        }
-
-        .feat-item p {
-            font-size: 0.85rem;
-            margin-bottom: 0;
-        }
-
-        /* Helper Classes */
-        .w-100 {
-            width: 100%;
-        }
-
-        .mb-2 {
-            margin-bottom: 0.5rem;
-        }
-
-        .mb-3 {
-            margin-bottom: 1rem;
-        }
-
-        .my-3 {
-            margin-top: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .opacity-1 {
-            opacity: 0.1;
         }
 
         /* Shareholders Tier Styles */
@@ -314,269 +217,19 @@
             gap: 0.5rem;
         }
 
-        /* Mobile Specific Refinements */
+        /* Mobile Adjustments */
         @media (max-width: 600px) {
-            body {
-                padding-top: 70px;
-            }
-
-            .container {
-                padding: 0 15px;
-            }
-
-            .dash-header h2 {
-                font-size: 1.5rem;
-            }
-
             .stat-value {
-                font-size: 1.5rem;
-            }
-
-            .panel {
-                padding: 1rem;
+                font-size: 1.4rem;
             }
 
             .tier-list {
                 grid-template-columns: 1fr;
             }
 
-            .about-features {
-                grid-template-columns: 1fr;
+            .dash-header h2 {
+                font-size: 1.4rem;
             }
-
-            .stat-mini .value {
-                font-size: 1rem;
-            }
-
-            .dash-nav {
-                padding: 3px;
-            }
-
-            .nav-item {
-                padding: 8px 5px;
-                min-width: 70px;
-            }
-
-            .nav-item i {
-                font-size: 1rem;
-            }
-
-            .nav-item span {
-                font-size: 0.65rem;
-            }
-        }
-
-        .dash-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .user-welcome h2 {
-            margin-bottom: 0;
-        }
-
-        .user-welcome span {
-            color: var(--primary-color);
-            font-size: 0.9rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--bg-light);
-            /* Uses #132B45 */
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .stat-card.primary {
-            border-color: var(--primary-color);
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #8892b0;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .stat-icon {
-            position: absolute;
-            right: 1.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 3rem;
-            opacity: 0.1;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 2rem;
-        }
-
-        .panel {
-            background: var(--bg-light);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-
-        .panel h3 {
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 1rem;
-        }
-
-        /* Packs Mini */
-        .dash-packs {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .pack-card-mini {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 8px;
-        }
-
-        .p-head {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .p-icon-mini {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .p-body button {
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        /* Forms */
-        .input-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-group input {
-            flex: 1;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: var(--bg-dark);
-            /* #0B1C2D */
-            color: white;
-        }
-
-        /* Table */
-        .history-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .history-table th {
-            text-align: left;
-            color: #8892b0;
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .history-table td {
-            padding: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.9rem;
-        }
-
-        .text-green {
-            color: #64ffda;
-        }
-
-        .text-red {
-            color: #ff6b6b;
-        }
-
-        .status-badge {
-            background: rgba(100, 255, 218, 0.1);
-            color: #64ffda;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.8rem;
-        }
-
-        .active-pack-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px;
-            background: rgba(255, 215, 0, 0.05);
-            margin-bottom: 5px;
-            border-radius: 5px;
-        }
-
-        /* Deposit Grid */
-        .deposit-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-        }
-
-        .deposit-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .deposit-card:hover {
-            background: rgba(100, 255, 218, 0.1);
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-
-        .d-amount {
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .d-label {
-            font-size: 0.7rem;
-            color: #8892b0;
-        }
-
-        .d-icon {
-            font-size: 1.2rem;
-            opacity: 0.5;
         }
     </style>
 </head>
@@ -589,74 +242,49 @@
             <div class="nav-links">
                 <a href="admin.html" id="adminLink" class="btn btn-outline btn-sm"
                     style="display: none; border-color: var(--gold); color: var(--gold); margin-right: 10px;">
-                    <i class="ph ph-shield-check"></i> Panel Admin
+                    <i class="ph ph-shield-check"></i> Admin
                 </a>
                 <button id="logoutBtn" class="btn btn-outline btn-sm">Déconnexion</button>
             </div>
         </div>
     </nav>
 
-    <!-- NAVIGATION MENU -->
-    <div class="container" style="margin-bottom: 2rem;">
-        <div class="dash-nav">
-            <button class="nav-item active" onclick="Dashboard.switchPage('page-home')">
-                <i class="ph ph-house"></i> <span>Accueil</span>
-            </button>
-            <button class="nav-item" onclick="Dashboard.switchPage('page-recharge')">
-                <i class="ph ph-lightning"></i> <span>Recharger</span>
-            </button>
-            <button class="nav-item" onclick="Dashboard.switchPage('page-invest')">
-                <i class="ph ph-storefront"></i> <span>Investir</span>
-            </button>
-            <button class="nav-item" onclick="Dashboard.switchPage('page-team')">
-                <i class="ph ph-users"></i> <span>Équipe</span>
-            </button>
-            <button class="nav-item" onclick="Dashboard.switchPage('page-shareholders')">
-                <i class="ph ph-crown"></i> <span>Actionnaires</span>
-            </button>
-            <button class="nav-item" onclick="Dashboard.switchPage('page-history')">
-                <i class="ph ph-clock-counter-clockwise"></i> <span>Histoire</span>
-            </button>
-            <button class="nav-item" onclick="Dashboard.switchPage('page-about')">
-                <i class="ph ph-info"></i> <span>À Propos</span>
-            </button>
-        </div>
-    </div>
-
     <div class="container">
-        <!-- HEADER & TIMER -->
-        <div class="dash-header" style="flex-direction: column; align-items: flex-start; gap: 1rem;">
-            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                <div class="user-welcome">
-                    <h2>Bienvenue, <span id="uName">...</span></h2>
-                    <span id="uId">ID: ...</span>
-                </div>
-                <div id="rewardTimer" class="timer-badge">
-                    <i class="ph ph-timer"></i> Prochain Gain: <span id="timeRemaining">--:--:--</span>
+        <!-- HEADER -->
+        <div class="dash-header"
+            style="flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+            <div class="user-welcome">
+                <h2>Bon retour, <span id="uName">...</span> !</h2>
+                <div style="display: flex; align-items: center; gap: 12px; margin-top: 5px;">
+                    <span id="uId" style="opacity: 0.7; font-size: 0.85rem;">ID: ---</span>
+                    <a href="https://whatsapp.com/channel/0029VbC9xOoLo4hjAZYTlL3S" target="_blank" class="text-gold"
+                        style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px; text-decoration: none; font-weight: 600;">
+                        <i class="ph ph-whatsapp-logo" style="font-size: 1.1rem;"></i> Canal WhatsApp
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- STATS CARDS (Toujours visibles ou spécifique ?) -->
+        <!-- STATS CARDS -->
         <div class="stats-grid">
             <div class="stat-card primary">
-                <div class="stat-label">Caisse (Solde Principal)</div>
+                <div class="stat-label">Caisse (Principal)</div>
                 <div class="stat-value" id="balMain">0 FCFA</div>
                 <div class="stat-icon"><i class="ph ph-wallet"></i></div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Solde Gains</div>
+                <div class="stat-label">Gains Journaliers</div>
                 <div class="stat-value text-gold" id="balGains">0 FCFA</div>
                 <div class="stat-icon"><i class="ph ph-trend-up"></i></div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Solde Commissions</div>
+                <div class="stat-label">Commissions Affiliés</div>
                 <div class="stat-value" id="balComm">0 FCFA</div>
                 <div class="stat-icon"><i class="ph ph-users-three"></i></div>
             </div>
         </div>
 
-        <!-- PAGES CONTENER -->
+        <!-- PAGES CONTAINER -->
         <div id="pages-container">
 
             <!-- PAGE HOME -->
@@ -665,22 +293,7 @@
                     <div class="main-col">
                         <div class="panel">
                             <h3><i class="ph ph-lightning"></i> Mes Packs Actifs</h3>
-                            <div id="activePacksList">
-                                <!-- Active items -->
-                            </div>
-                        </div>
-                        <div class="panel">
-                            <h3><i class="ph ph-chart-line-up"></i> Résumé Activité</h3>
-                            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                                <div class="stat-mini">
-                                    <span class="label">Total Investi</span>
-                                    <span class="value" id="totalInvested">0 F</span>
-                                </div>
-                                <div class="stat-mini">
-                                    <span class="label">Gains Totaux</span>
-                                    <span class="value text-gold" id="totalEarned">0 F</span>
-                                </div>
-                            </div>
+                            <div id="activePacksList"></div>
                         </div>
                     </div>
                     <div class="side-col">
@@ -688,11 +301,11 @@
                             <h3><i class="ph ph-money"></i> Actions Rapides</h3>
                             <button class="btn btn-primary w-100 mb-2"
                                 onclick="Dashboard.switchPage('page-recharge')">Recharger</button>
-                            <button class="btn btn-outline w-100" onclick="Dashboard.showWithdrawModal()">Retirer mes
-                                gains</button>
+                            <button class="btn btn-outline w-100" onclick="Dashboard.showWithdrawModal()">Faire un
+                                Retrait</button>
                         </div>
                         <div class="panel">
-                            <h3><i class="ph ph-share-network"></i> Parrainage</h3>
+                            <h3><i class="ph ph-share-network"></i> Mon Lien</h3>
                             <div class="input-group">
                                 <input type="text" value="..." id="refLinkInput" readonly>
                                 <button class="btn btn-sm btn-outline" id="copyRefBtn"><i
@@ -706,16 +319,9 @@
             <!-- PAGE RECHARGE -->
             <section id="page-recharge" class="dash-page">
                 <div class="panel">
-                    <h3><i class="ph ph-lightning"></i> Recharger mon Compte</h3>
-                    <div class="recharge-info mb-3">
-                        <p>Transfert <strong>Moov Money</strong> vers : <span class="text-gold">01 65 84 83 36</span>
-                        </p>
-                    </div>
+                    <h3><i class="ph ph-lightning"></i> Recharger</h3>
+                    <p class="mb-3">Moov Money : <strong class="text-gold">01 65 84 83 36</strong></p>
                     <div id="depositGrid" class="deposit-grid mb-3"></div>
-                    <div id="ussdAction" class="ussd-box" style="display:none;">
-                        <a id="ussdBtn" href="#" class="btn btn-primary w-100">Lancer USSD</a>
-                    </div>
-                    <hr class="my-3 opacity-1">
                     <form id="manualDepositForm">
                         <div class="form-group mb-2">
                             <label>Numéro expéditeur</label>
@@ -723,19 +329,20 @@
                                 class="form-control">
                         </div>
                         <div class="form-group mb-2">
-                            <label>Montant envoyé (FCFA)</label>
+                            <label>Montant (FCFA)</label>
                             <input type="number" id="depAmount" placeholder="Ex: 5000" required class="form-control">
                         </div>
                         <div class="form-group mb-3">
-                            <label>Référence Transaction (ID)</label>
-                            <input type="text" id="depTxId" placeholder="ID recu par SMS" required class="form-control">
+                            <label>ID Transaction SMS</label>
+                            <input type="text" id="depTxId" placeholder="ID de la transaction" required
+                                class="form-control">
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Confirmer mon dépôt</button>
+                        <button type="submit" class="btn btn-primary w-100">Confirmer le dépôt</button>
                     </form>
                 </div>
             </section>
 
-            <!-- PAGE INVESTIR -->
+            <!-- PAGE INVEST -->
             <section id="page-invest" class="dash-page">
                 <div class="panel">
                     <h3><i class="ph ph-storefront"></i> Boutique de Packs</h3>
@@ -743,130 +350,111 @@
                 </div>
             </section>
 
-            <!-- PAGE EQUIPE -->
+            <!-- PAGE TEAM -->
             <section id="page-team" class="dash-page">
                 <div class="panel">
                     <h3><i class="ph ph-users-four"></i> Mon Équipe</h3>
                     <div id="leveledReferrals">
                         <div class="level-group">
                             <h4 class="text-gold">Niveau 1 (30%)</h4>
-                            <div id="ref-lvl-1" class="ref-container">Chargement...</div>
+                            <div id="ref-lvl-1" class="ref-container"></div>
                         </div>
                         <div class="level-group">
                             <h4 class="text-gold">Niveau 2 (10%)</h4>
-                            <div id="ref-lvl-2" class="ref-container">Chargement...</div>
-                        </div>
-                        <div class="level-group">
-                            <h4 class="text-gold">Niveau 3 (5%)</h4>
-                            <div id="ref-lvl-3" class="ref-container">Chargement...</div>
+                            <div id="ref-lvl-2" class="ref-container"></div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- PAGE ACTIONNAIRES -->
+            <!-- PAGE SHAREHOLDERS -->
             <section id="page-shareholders" class="dash-page">
                 <div class="panel">
-                    <h3 class="d-flex align-items-center gap-2">
-                        <i class="ph ph-crown text-gold"></i> Bintex Actionnaires
-                    </h3>
-                    <p class="mb-3">Devenez un pilier de Bintex et recevez des bonus exclusifs en développant votre
-                        réseau.</p>
-
+                    <h3><i class="ph ph-crown text-gold"></i> Actionnaires Bintex</h3>
                     <div class="stats-grid"
-                        style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-bottom: 2rem;">
+                        style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); margin-bottom: 20px;">
                         <div class="stat-mini">
                             <span class="label">L1 Investis</span>
                             <div id="stat-l1-active" class="value">0</div>
                         </div>
                         <div class="stat-mini">
-                            <span class="label">Équipe Investie</span>
+                            <span class="label">Total Investis</span>
                             <div id="stat-total-active" class="value">0</div>
                         </div>
                     </div>
-
-                    <div class="shareholder-view my-3">
-                        <h4 class="mb-3">Paliers et Récompenses</h4>
-
-                        <div class="tier-list">
-                            <div class="tier-item" id="tier_l1_15">
-                                <div class="tier-icon"><i class="ph ph-medal"></i></div>
-                                <div class="tier-info">
-                                    <h5>Partenaire Bronze</h5>
-                                    <p>15 Filleuls Niveau 1</p>
-                                </div>
-                                <div class="tier-reward">+10 000 F</div>
+                    <div class="tier-list">
+                        <div class="tier-item" id="tier_l1_15">
+                            <div class="tier-icon"><i class="ph ph-medal"></i></div>
+                            <div class="tier-info">
+                                <h5>Bronze</h5>
+                                <p>15 L1</p>
                             </div>
-                            <div class="tier-item" id="tier_l1_20">
-                                <div class="tier-icon"><i class="ph ph-medal"></i></div>
-                                <div class="tier-info">
-                                    <h5>Partenaire Argent</h5>
-                                    <p>20 Filleuls Niveau 1</p>
-                                </div>
-                                <div class="tier-reward">+15 000 F</div>
-                            </div>
-                            <div class="tier-item" id="tier_l1_30">
-                                <div class="tier-icon"><i class="ph ph-medal"></i></div>
-                                <div class="tier-info">
-                                    <h5>Partenaire Or</h5>
-                                    <p>30 Filleuls Niveau 1</p>
-                                </div>
-                                <div class="tier-reward">+25 000 F</div>
-                            </div>
-                            <div class="tier-item" id="tier_tot_50">
-                                <div class="tier-icon"><i class="ph ph-briefcase"></i></div>
-                                <div class="tier-info">
-                                    <h5>Manager Bintex</h5>
-                                    <p>50 Filleuls (Total)</p>
-                                </div>
-                                <div class="tier-reward">+45 000 F</div>
-                            </div>
-                            <div class="tier-item" id="tier_tot_75">
-                                <div class="tier-icon"><i class="ph ph-briefcase"></i></div>
-                                <div class="tier-info">
-                                    <h5>Directeur Bintex</h5>
-                                    <p>75 Filleuls (Total)</p>
-                                </div>
-                                <div class="tier-reward">+70 000 F</div>
-                            </div>
-                            <div class="tier-item" id="tier_tot_85">
-                                <div class="tier-icon"><i class="ph ph-star"></i></div>
-                                <div class="tier-info">
-                                    <h5>Ambassadeur Bintex</h5>
-                                    <p>85 Filleuls (Total)</p>
-                                </div>
-                                <div class="tier-reward">+80 000 F</div>
-                            </div>
-                            <div class="tier-item" id="tier_tot_100">
-                                <div class="tier-icon"><i class="ph ph-crown"></i></div>
-                                <div class="tier-info">
-                                    <h5>Actionnaire Bintex</h5>
-                                    <p>100 Filleuls (Total)</p>
-                                </div>
-                                <div class="tier-reward">+95 000 F</div>
-                            </div>
-                            <div class="tier-item" id="tier_tot_125">
-                                <div class="tier-icon"><i class="ph ph-gem"></i></div>
-                                <div class="tier-info">
-                                    <h5>Conseil Supérieur</h5>
-                                    <p>125 Filleuls (Total)</p>
-                                </div>
-                                <div class="tier-reward">100k + 15k/sem</div>
-                            </div>
+                            <div class="tier-reward">+10k</div>
                         </div>
-                    </div>
-
-                    <div class="alert-box info">
-                        <i class="ph ph-info"></i>
-                        <p>Les bonus sont automatiques. Vous devez posséder au moins un pack actif.</p>
+                        <div class="tier-item" id="tier_l1_20">
+                            <div class="tier-icon"><i class="ph ph-medal"></i></div>
+                            <div class="tier-info">
+                                <h5>Argent</h5>
+                                <p>20 L1</p>
+                            </div>
+                            <div class="tier-reward">+15k</div>
+                        </div>
+                        <div class="tier-item" id="tier_l1_30">
+                            <div class="tier-icon"><i class="ph ph-medal"></i></div>
+                            <div class="tier-info">
+                                <h5>Or</h5>
+                                <p>30 L1</p>
+                            </div>
+                            <div class="tier-reward">+25k</div>
+                        </div>
+                        <div class="tier-item" id="tier_tot_50">
+                            <div class="tier-icon"><i class="ph ph-briefcase"></i></div>
+                            <div class="tier-info">
+                                <h5>Manager</h5>
+                                <p>50 Total</p>
+                            </div>
+                            <div class="tier-reward">+45k</div>
+                        </div>
+                        <div class="tier-item" id="tier_tot_75">
+                            <div class="tier-icon"><i class="ph ph-briefcase"></i></div>
+                            <div class="tier-info">
+                                <h5>Directeur</h5>
+                                <p>75 Total</p>
+                            </div>
+                            <div class="tier-reward">+70k</div>
+                        </div>
+                        <div class="tier-item" id="tier_tot_85">
+                            <div class="tier-icon"><i class="ph ph-star"></i></div>
+                            <div class="tier-info">
+                                <h5>Ambassadeur</h5>
+                                <p>85 Total</p>
+                            </div>
+                            <div class="tier-reward">+80k</div>
+                        </div>
+                        <div class="tier-item" id="tier_tot_100">
+                            <div class="tier-icon"><i class="ph ph-crown"></i></div>
+                            <div class="tier-info">
+                                <h5>Actionnaire</h5>
+                                <p>100 Total</p>
+                            </div>
+                            <div class="tier-reward">+95k</div>
+                        </div>
+                        <div class="tier-item" id="tier_tot_125">
+                            <div class="tier-icon"><i class="ph ph-gem"></i></div>
+                            <div class="tier-info">
+                                <h5>Elite</h5>
+                                <p>125 Total</p>
+                            </div>
+                            <div class="tier-reward">100k + Rente</div>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <!-- PAGE HISTOIRE -->
+            <!-- PAGE HISTORY -->
             <section id="page-history" class="dash-page">
                 <div class="panel">
-                    <h3><i class="ph ph-clock-counter-clockwise"></i> Historique Transactions</h3>
+                    <h3><i class="ph ph-clock"></i> Historique</h3>
                     <div class="table-responsive">
                         <table class="history-table">
                             <thead>
@@ -886,71 +474,50 @@
 
             <!-- PAGE ABOUT -->
             <section id="page-about" class="dash-page">
-                <div class="panel about-panel">
-                    <h3><i class="ph ph-info"></i> À Propos de Bintex</h3>
-                    <div class="about-content">
-                        <p><strong>Bintex</strong> est d'abord un actif numérique conçu pour faciliter l'investissement
-                            et la croissance financière.</p>
-                        <p>Notre mission est de rendre l'investissement accessible à tous, sans avoir besoin de
-                            maîtriser le trading complexe de cryptomonnaies ou les marchés financiers traditionnels.</p>
-                        <div class="about-features">
-                            <div class="feat-item">
-                                <i class="ph ph-shield-check"></i>
-                                <div>
-                                    <h5>Sécurité & Simplicité</h5>
-                                    <p>Une interface claire et des processus de dépôt/retrait simplifiés via Mobile
-                                        Money.</p>
-                                </div>
-                            </div>
-                            <div class="feat-item">
-                                <i class="ph ph-trend-up"></i>
-                                <div>
-                                    <h5>Croissance Passive</h5>
-                                    <p>Des rendements journaliers calculés pour assurer une croissance stable de votre
-                                        capital.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="panel">
+                    <h3>À Propos</h3>
+                    <p>Bintex est votre partenaire d'investissement numérique de confiance.</p>
                 </div>
             </section>
 
         </div>
     </div>
 
+    <!-- BOTTOM NAV -->
+    <div class="dash-nav">
+        <button class="nav-item active" onclick="Dashboard.switchPage('page-home')">
+            <i class="ph ph-house"></i> <span>Accueil</span>
+        </button>
+        <button class="nav-item" onclick="Dashboard.switchPage('page-recharge')">
+            <i class="ph ph-lightning"></i> <span>Recharger</span>
+        </button>
+        <button class="nav-item" onclick="Dashboard.switchPage('page-invest')">
+            <i class="ph ph-storefront"></i> <span>Packs</span>
+        </button>
+        <button class="nav-item" onclick="Dashboard.switchPage('page-team')">
+            <i class="ph ph-users-three"></i> <span>Équipe</span>
+        </button>
+        <button class="nav-item" onclick="Dashboard.switchPage('page-shareholders')">
+            <i class="ph ph-crown"></i> <span>Actionnaire</span>
+        </button>
+        <button class="nav-item" onclick="Dashboard.switchPage('page-history')">
+            <i class="ph ph-clock"></i> <span>Histoire</span>
+        </button>
+    </div>
+
     <!-- WITHDRAWAL MODAL -->
     <div id="withdrawModal" class="modal"
-        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center;">
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; justify-content:center; align-items:center;">
         <div class="panel" style="width:90%; max-width:400px; position:relative;">
             <button onclick="document.getElementById('withdrawModal').style.display='none'"
                 style="position:absolute; top:10px; right:10px; background:none; border:none; color:white; font-size:1.5rem;">&times;</button>
-
-            <h3><i class="ph ph-money"></i> Demande de Retrait</h3>
-            <p style="font-size:0.9rem; margin-bottom:15px; color:#8892b0;">
-                Min: 1000 F | Frais: 10%<br>
-                Le montant sera déduit de vos Gains et Commissions.
-            </p>
-
+            <h3>Retrait de Gains</h3>
             <form id="withdrawForm">
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label style="display:block; margin-bottom:5px; font-size:0.9rem;">Montant (FCFA)</label>
-                    <input type="number" id="wAmount" class="form-control" placeholder="Ex: 5000" required
-                        style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:5px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom:15px;">
-                    <label style="display:block; margin-bottom:5px; font-size:0.9rem;">Numéro Mobile Money</label>
-                    <input type="tel" id="wPhone" class="form-control" placeholder="Ex: 01xxxxxxxx" required
-                        style="width:100%; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:5px;">
-                </div>
-
-                <div
-                    style="background:rgba(255,255,255,0.05); padding:10px; border-radius:5px; margin-bottom:15px; font-size:0.9rem;">
-                    <div>Montant Net: <span id="wNet" class="text-gold">0 F</span></div>
-                    <div style="font-size:0.8rem; opacity:0.7;">Frais: <span id="wFee">0 F</span></div>
-                </div>
-
-                <button type="submit" class="btn btn-primary" style="width:100%;">Valider la demande</button>
+                <div class="form-group mb-2"><label>Montant (FCFA)</label><input type="number" id="wAmount"
+                        class="form-control" required></div>
+                <div class="form-group mb-2"><label>Numéro Moov</label><input type="tel" id="wPhone"
+                        class="form-control" required></div>
+                <button type="submit" class="btn btn-primary w-100 mt-2">Valider</button>
             </form>
         </div>
     </div>

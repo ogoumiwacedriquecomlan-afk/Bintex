@@ -184,13 +184,12 @@ BEGIN
   days_missed := (current_system_date - last_reward_date);
 
   -- 3. Filter Active Packs (30-day expiry)
-  -- We collect price for gains check simultaneously
   FOR pack IN SELECT * FROM jsonb_array_elements(prof.active_packs) LOOP
     -- Check if pack is still valid (less than 30 days old)
-    -- We use purchased_at if available, else date (fallback)
-    IF (now_ts - COALESCE((pack->>'purchased_at')::timestamp with time zone, (pack->>'date')::timestamp with time zone)) < interval '30 days' THEN
+    IF (now_ts - COALESCE((pack->>'purchased_at')::timestamp with time zone, to_date(pack->>'date', 'DD/MM/YYYY')::timestamp with time zone)) < interval '30 days' THEN
       new_active_packs := new_active_packs || pack;
-      total_daily_return := total_daily_return + (pack->>'dailyReturn')::numeric;
+      -- Safely add return value, check for dailyReturn or daily (legacy)
+      total_daily_return := total_daily_return + COALESCE((pack->>'dailyReturn')::numeric, (pack->>'daily')::numeric, 0);
     END IF;
   END LOOP;
 

@@ -162,65 +162,72 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 5. RPC: Process Daily Rewards (Autonome avec Catch-up)
+-- 5. RPC: Process Daily Rewards (Calendar Day based + 30-day Expiry)
 CREATE OR REPLACE FUNCTION public.process_daily_rewards()
 RETURNS JSON AS $$
 DECLARE
   prof record;
-  pack record;
+  pack jsonb;
+  new_active_packs jsonb := '[]'::jsonb;
   total_daily_return numeric := 0;
   total_gain_to_award numeric := 0;
-  days_passed int := 0;
+  days_missed int := 0;
   now_ts timestamp with time zone := now();
-  last_reward timestamp with time zone;
+  last_reward_date date;
+  current_system_date date := current_date;
 BEGIN
-  -- Récupérer profil
+  -- 1. Get profile
   SELECT * INTO prof FROM public.profiles WHERE id = auth.uid();
+  last_reward_date := prof.last_reward_at::date;
   
-  last_reward := prof.last_reward_at;
-  
-  -- Calculer combien de jours pleins (24h) sont passés depuis last_reward_at
-  days_passed := floor(extract(epoch from (now_ts - last_reward)) / 86400)::int;
+  -- 2. Calculate days missed (Calendar days transition)
+  days_missed := (current_system_date - last_reward_date);
 
-  -- Si moins d'un jour (24h) de retard, on ne fait rien (waiting)
-  IF days_passed < 1 THEN
-    RETURN jsonb_build_object(
-      'status', 'waiting', 
-      'next_reward_in', extract(epoch from (last_reward + interval '1 day' - now_ts))
-    );
-  END IF;
-
-  -- Calculer le rendement quotidien total des packs actifs
+  -- 3. Filter Active Packs (30-day expiry)
+  -- We collect price for gains check simultaneously
   FOR pack IN SELECT * FROM jsonb_array_elements(prof.active_packs) LOOP
-    total_daily_return := total_daily_return + (pack->>'dailyReturn')::numeric;
+    -- Check if pack is still valid (less than 30 days old)
+    -- We use purchased_at if available, else date (fallback)
+    IF (now_ts - COALESCE((pack->>'purchased_at')::timestamp with time zone, (pack->>'date')::timestamp with time zone)) < interval '30 days' THEN
+      new_active_packs := new_active_packs || pack;
+      total_daily_return := total_daily_return + (pack->>'dailyReturn')::numeric;
+    END IF;
   END LOOP;
 
-  -- Gain total = Rendement quotidien x Nombre de jours manqués
-  total_gain_to_award := total_daily_return * days_passed;
-
-  IF total_gain_to_award > 0 THEN
-    -- Créditer Gains et mettre à jour last_reward_at proportionnellement
+  -- 4. If days passed, award gains
+  IF days_missed >= 1 THEN
+    total_gain_to_award := total_daily_return * days_missed;
+    
     UPDATE public.profiles
     SET balance_gains = balance_gains + total_gain_to_award,
-        last_reward_at = last_reward + (days_passed * interval '1 day'),
-        transactions = transactions || jsonb_build_object(
-          'type', 'gain',
-          'amount', total_gain_to_award,
-          'detail', 'Gains cumulés (' || days_passed || ' jour(s))',
-          'date', to_char(now_ts, 'DD/MM/YYYY HH24:MI'),
-          'status', 'Validé'
-        )
+        active_packs = new_active_packs, -- Update packs (removes expired ones)
+        last_reward_at = now_ts, -- Reset to now (or rather current_system_date 00:00 for strictness, but now is safer for partial days)
+        transactions = CASE 
+          WHEN total_gain_to_award > 0 THEN 
+            transactions || jsonb_build_object(
+              'type', 'gain',
+              'amount', total_gain_to_award,
+              'detail', 'Gains journaliers distributeur (' || days_missed || ' jour(s))',
+              'date', to_char(now_ts, 'DD/MM/YYYY HH24:MI'),
+              'status', 'Validé'
+            )
+          ELSE transactions 
+        END
     WHERE id = auth.uid();
-    
+
     RETURN jsonb_build_object(
       'status', 'success', 
       'amount', total_gain_to_award, 
-      'days_processed', days_passed
+      'days_processed', days_missed,
+      'packs_removed', jsonb_array_length(prof.active_packs) - jsonb_array_length(new_active_packs)
     );
   ELSE
-    -- Pas de pack = On avance quand même la date pour éviter les checks inutiles
-    UPDATE public.profiles SET last_reward_at = last_reward + (days_passed * interval '1 day') WHERE id = auth.uid();
-    RETURN jsonb_build_object('status', 'no_packs');
+    -- Just update packs if any expired without awarding gains
+    IF jsonb_array_length(prof.active_packs) != jsonb_array_length(new_active_packs) THEN
+       UPDATE public.profiles SET active_packs = new_active_packs WHERE id = auth.uid();
+    END IF;
+    
+    RETURN jsonb_build_object('status', 'waiting');
   END IF;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

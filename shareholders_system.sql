@@ -34,7 +34,7 @@ BEGIN
   -- Count Level 1 investing referrals
   SELECT count(*) INTO l1_count 
   FROM public.profiles 
-  WHERE referrer_id = auth.uid() AND jsonb_array_length(active_packs) > 0;
+  WHERE referrer_id = auth.uid() AND COALESCE(jsonb_array_length(active_packs), 0) > 0;
 
   -- Count Total investing referrals (L1 + L2 + L3)
   WITH RECURSIVE referral_tree AS (
@@ -46,7 +46,7 @@ BEGIN
   SELECT count(*) INTO total_count 
   FROM referral_tree rt 
   JOIN public.profiles p ON p.id = rt.id 
-  WHERE jsonb_array_length(p.active_packs) > 0;
+  WHERE COALESCE(jsonb_array_length(p.active_packs), 0) > 0;
 
   new_claimed_bonuses := prof.claimed_bonuses;
 

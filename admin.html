@@ -79,6 +79,31 @@
         <h3>Demandes de Retrait</h3>
         <div id="withdrawalsList">Chargement...</div>
 
+        <h3>Gestion des Utilisateurs</h3>
+        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+            <input type="text" id="userSearch" placeholder="Rechercher par Nom, Tel ou ID..."
+                style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.1); background: #0a192f; color: white;">
+            <div style="max-height: 400px; overflow-y: auto;">
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                    <thead>
+                        <tr style="text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                            <th style="padding: 10px;">ID</th>
+                            <th style="padding: 10px;">Nom</th>
+                            <th style="padding: 10px;">Téléphone</th>
+                            <th style="padding: 10px;">Principal</th>
+                            <th style="padding: 10px;">Gains</th>
+                            <th style="padding: 10px;">Comms</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersListBody">
+                        <tr>
+                            <td colspan="6" style="padding:10px;">Chargement...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <h3>Historique Global de la Plateforme</h3>
         <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
             <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
@@ -318,9 +343,49 @@
             `).join('');
         }
 
+        let allProfiles = [];
+        async function loadUsers() {
+            const { data, error } = await supabaseClient
+                .from('profiles')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error(error);
+                return;
+            }
+            allProfiles = data;
+            renderUsers(allProfiles);
+        }
+
+        function renderUsers(profiles) {
+            const tbody = document.getElementById('usersListBody');
+            tbody.innerHTML = profiles.map(p => `
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); cursor:pointer;" onclick="console.log('${p.id}')">
+                    <td style="padding: 8px;">${p.referral_code || '---'}</td>
+                    <td style="padding: 8px;">${p.name || '---'}</td>
+                    <td style="padding: 8px;">${p.phone || '---'}</td>
+                    <td style="padding: 8px;">${(p.balance_main || 0).toLocaleString()} F</td>
+                    <td style="padding: 8px; color: var(--gold);">${(p.balance_gains || 0).toLocaleString()} F</td>
+                    <td style="padding: 8px;">${(p.balance_commissions || 0).toLocaleString()} F</td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('userSearch').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = allProfiles.filter(p =>
+                (p.name && p.name.toLowerCase().includes(val)) ||
+                (p.phone && p.phone.includes(val)) ||
+                (p.referral_code && p.referral_code.toLowerCase().includes(val))
+            );
+            renderUsers(filtered);
+        });
+
         loadDeposits();
         loadWithdrawals();
         loadGlobalActivity();
+        loadUsers();
     </script>
 </body>
 

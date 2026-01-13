@@ -463,51 +463,52 @@
     </div>
 
     <div class="container">
-        <!-- HEADER -->
-        <div class="dash-header"
-            style="flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1.5rem;">
-            <div class="user-welcome">
-                <h2>Bon retour, <span id="uName">...</span> !</h2>
-                <div style="display: flex; align-items: center; gap: 12px; margin-top: 5px;">
-                    <span id="uId" style="opacity: 0.7; font-size: 0.85rem;">ID: ---</span>
-                    <a href="https://whatsapp.com/channel/0029VbC9xOoLo4hjAZYTlL3S" target="_blank" class="text-gold"
-                        style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px; text-decoration: none; font-weight: 600;">
-                        <i class="ph ph-whatsapp-logo" style="font-size: 1.1rem;"></i> Canal WhatsApp
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- STATS CARDS -->
-        <div class="stats-grid">
-            <div class="stat-card primary">
-                <div class="stat-label">Caisse (Principal)</div>
-                <div class="stat-value" id="balMain">0 FCFA</div>
-                <div class="stat-icon"><i class="ph ph-wallet"></i></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label" style="display:flex; justify-content:space-between;">
-                    <span>Gains Journaliers</span>
-                    <small id="totalEarned" style="opacity:0.6; font-size:0.6rem;">Total: 0</small>
-                </div>
-                <div class="stat-value text-gold" id="balGains">0 FCFA</div>
-                <div class="stat-icon"><i class="ph ph-trend-up"></i></div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label" style="display:flex; justify-content:space-between;">
-                    <span>Commissions</span>
-                    <small id="totalInvested" style="opacity:0.6; font-size:0.6rem;">Packs: 0</small>
-                </div>
-                <div class="stat-value" id="balComm">0 FCFA</div>
-                <div class="stat-icon"><i class="ph ph-users-three"></i></div>
-            </div>
-        </div>
-
         <!-- PAGES CONTAINER -->
         <div id="pages-container">
 
             <!-- PAGE HOME -->
             <section id="page-home" class="dash-page active">
+
+                <!-- MOVED HEADER & STATS HERE -->
+                <div class="dash-header"
+                    style="flex-direction: column; align-items: flex-start; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+                    <div class="user-welcome">
+                        <h2>Bon retour, <span id="uName">...</span> !</h2>
+                        <div style="display: flex; align-items: center; gap: 12px; margin-top: 5px;">
+                            <span id="uId" style="opacity: 0.7; font-size: 0.85rem;">ID: ---</span>
+                            <a href="https://whatsapp.com/channel/0029VbC9xOoLo4hjAZYTlL3S" target="_blank"
+                                class="text-gold"
+                                style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px; text-decoration: none; font-weight: 600;">
+                                <i class="ph ph-whatsapp-logo" style="font-size: 1.1rem;"></i> Canal WhatsApp
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card primary">
+                        <div class="stat-label">Caisse (Principal)</div>
+                        <div class="stat-value" id="balMain">0 FCFA</div>
+                        <div class="stat-icon"><i class="ph ph-wallet"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label" style="display:flex; justify-content:space-between;">
+                            <span>Gains Journaliers</span>
+                            <small id="totalEarned" style="opacity:0.6; font-size:0.6rem;">Total: 0</small>
+                        </div>
+                        <div class="stat-value text-gold" id="balGains">0 FCFA</div>
+                        <div class="stat-icon"><i class="ph ph-trend-up"></i></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label" style="display:flex; justify-content:space-between;">
+                            <span>Commissions</span>
+                            <small id="totalInvested" style="opacity:0.6; font-size:0.6rem;">Packs: 0</small>
+                        </div>
+                        <div class="stat-value" id="balComm">0 FCFA</div>
+                        <div class="stat-icon"><i class="ph ph-users-three"></i></div>
+                    </div>
+                </div>
+                <!-- END MOVED HEADER & STATS -->
                 <!-- Quick Access Cards -->
                 <div class="quick-actions-grid">
                     <div class="action-card" onclick="Dashboard.switchPage('page-invest')">

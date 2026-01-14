@@ -202,10 +202,10 @@ begin
       update public.profiles set spins_count = spins_count + 1 where id = upline1;
     end if;
 
-    -- Niveau 2 (10%)
+    -- Niveau 2 (5%)
     select referrer_id into upline2 from public.profiles where id = upline1;
     if upline2 is not null then
-      comm2 := pack_price * 0.10;
+      comm2 := pack_price * 0.05;
       update public.profiles 
       set balance_commissions = balance_commissions + comm2,
           transactions = transactions || jsonb_build_object(
@@ -217,10 +217,10 @@ begin
           )
       where id = upline2;
 
-      -- Niveau 3 (5%)
+      -- Niveau 3 (2%)
       select referrer_id into upline3 from public.profiles where id = upline2;
       if upline3 is not null then
-        comm3 := pack_price * 0.05;
+        comm3 := pack_price * 0.02;
         update public.profiles 
         set balance_commissions = balance_commissions + comm3,
             transactions = transactions || jsonb_build_object(

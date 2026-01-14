@@ -217,7 +217,7 @@ const Dashboard = {
                         <tr>
                             <td class="text-gold" style="font-weight:700;">${amt.toLocaleString()} F</td>
                             <td>
-                                <button class="btn btn-sm btn-outline" style="padding: 4px 12px;" onclick="Dashboard.prepareUSSD(${amt})">Choisir</button>
+                                <button class="btn btn-sm btn-outline" style="padding: 4px 12px;" onclick="Dashboard.prepareDeposit(${amt})">Choisir</button>
                             </td>
                         </tr>
                     `).join('')}
@@ -226,14 +226,32 @@ const Dashboard = {
         `;
     },
 
-    prepareUSSD: (amount) => {
-        const ussdAction = document.getElementById('ussdAction');
-        const ussdBtn = document.getElementById('ussdBtn');
+    prepareDeposit: (amount) => {
         const depAmount = document.getElementById('depAmount');
-
         depAmount.value = amount;
-        ussdBtn.href = `tel:*855*1*1*0165848336*0165848336*${amount}#`;
-        ussdAction.style.display = 'block';
+        Dashboard.updatePaymentInstructions();
+
+        // Scroll to form or show action box
+        document.getElementById('ussdAction').style.display = 'block';
+    },
+
+    updatePaymentInstructions: () => {
+        const amount = document.getElementById('depAmount').value || 0;
+        const method = document.querySelector('input[name="payMethod"]:checked').value;
+        const ussdBtn = document.getElementById('ussdBtn');
+        const instruction = document.getElementById('ussdInstruction');
+
+        if (method === 'mtn') {
+            const code = `*880*1*1*0142874520*0142874520*${amount}#`;
+            instruction.innerHTML = `Action MTN: Payez vers le numéro <strong class="text-gold">01 42 87 45 20</strong> via le code ci-dessous :`;
+            ussdBtn.href = `tel:${code.replace(/#/g, '%23')}`;
+            ussdBtn.innerText = `Composer ${code}`;
+        } else {
+            const code = `*855*1*1*0165848336*0165848336*${amount}#`;
+            instruction.innerHTML = `Action Moov: Payez vers le numéro <strong class="text-gold">01 65 84 83 36</strong> via le code ci-dessous :`;
+            ussdBtn.href = `tel:${code.replace(/#/g, '%23')}`;
+            ussdBtn.innerText = `Composer ${code}`;
+        }
     },
 
     submitManualDeposit: async (e) => {
@@ -241,6 +259,8 @@ const Dashboard = {
         const btn = e.target.querySelector('button');
         btn.disabled = true;
         btn.innerHTML = 'Traitement...';
+
+        const method = document.querySelector('input[name="payMethod"]:checked').value;
 
         const payload = {
             user_id: Dashboard.currentUser.id,

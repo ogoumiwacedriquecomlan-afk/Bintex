@@ -40,7 +40,20 @@
             font-weight: 700;
             color: white;
             margin-bottom: 2rem;
-            display: block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .auth-card-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
         }
 
         .form-group {
@@ -91,7 +104,10 @@
 <body>
 
     <div class="auth-card">
-        <a href="index.html" class="auth-logo">BIN<span class="text-gold">TEX</span></a>
+        <a href="index.html" class="auth-logo">
+            <img src="images/logo.jpg" alt="Bintex Logo" class="auth-card-logo">
+            <span>BIN<span class="text-gold">TEX</span></span>
+        </a>
 
         <div class="error-msg" id="errorMsg"></div>
 

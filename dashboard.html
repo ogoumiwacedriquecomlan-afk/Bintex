@@ -444,7 +444,11 @@
 
     <nav class="navbar">
         <div class="container nav-container">
-            <a href="index.html" class="logo">BIN<span class="text-gold">TEX</span></a>
+            <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 10px;">
+                <img src="images/logo.jpg" alt="Logo"
+                    style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--gold);">
+                <span>BIN<span class="text-gold">TEX</span></span>
+            </a>
             <div class="nav-links">
                 <a href="admin.html" id="adminLink" class="btn btn-outline btn-sm"
                     style="display: none; border-color: var(--gold); color: var(--gold); margin-right: 10px;">
@@ -552,24 +556,7 @@
                     <h3><i class="ph ph-lightning"></i> Recharger</h3>
                     <p class="mb-3" style="font-size: 0.9rem;">Moov Money : <strong class="text-gold">01 65 84 83
                             36</strong></p>
-                    <div id="depositGrid" class="mb-4"></div>
-                    <form id="manualDepositForm">
-                        <div class="form-group mb-2">
-                            <label>Numéro expéditeur</label>
-                            <input type="tel" id="senderNum" placeholder="Votre numéro Moov" required
-                                class="form-control">
-                        </div>
-                        <div class="form-group mb-2">
-                            <label>Montant (FCFA)</label>
-                            <input type="number" id="depAmount" placeholder="Ex: 5000" required class="form-control">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label>ID Transaction SMS</label>
-                            <input type="text" id="depTxId" placeholder="ID de la transaction" required
-                                class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Confirmer le dépôt</button>
-                    </form>
+
                 </div>
             </section>
 
@@ -591,11 +578,11 @@
                             <div id="ref-lvl-1" class="ref-container"></div>
                         </div>
                         <div class="level-group">
-                            <h4 class="text-gold">Niveau 2 (10%)</h4>
+                            <h4 class="text-gold">Niveau 2 (5%)</h4>
                             <div id="ref-lvl-2" class="ref-container"></div>
                         </div>
                         <div class="level-group">
-                            <h4 class="text-gold">Niveau 3 (5%)</h4>
+                            <h4 class="text-gold">Niveau 3 (2%)</h4>
                             <div id="ref-lvl-3" class="ref-container"></div>
                         </div>
                     </div>
@@ -746,7 +733,23 @@
             <section id="page-about" class="dash-page">
                 <div class="panel">
                     <h3>À Propos</h3>
-                    <p>Bintex est votre partenaire d'investissement numérique de confiance.</p>
+                    <div class="about-content" style="font-size: 0.95rem; line-height: 1.6; color: #a8b2d1;">
+                        <p><strong>BINTEX</strong> est avant tout un actif numérique conçu pour faciliter
+                            l’investissement et la croissance financière dans un environnement moderne et sécurisé.</p>
+                        <p>La 🪙 crypto BINTEX a été pensée comme un outil de valeur, permettant aux utilisateurs de
+                            participer à un 📈 système d’investissement structuré, simple et accessible, sans avoir
+                            besoin de maîtriser le trading de cryptomonnaies.</p>
+                        <p>🖥️ La plateforme <strong>BINTEX</strong> n’est pas une plateforme de 🔄 trading crypto, mais
+                            un espace de gestion et de valorisation de l’actif BINTEX. Elle permet aux utilisateurs de
+                            💰 déposer des fonds, 🔁 activer des cycles d’investissement et 👀 suivre l’évolution des
+                            gains, en s’appuyant sur des mécanismes inspirés de la 🔗 blockchain et des standards du
+                            secteur crypto.</p>
+                        <p>🛡️ <strong>BINTEX</strong> repose sur des principes de transparence, de discipline et de 🌱
+                            progression à long terme. L’objectif est d’offrir une ✅ solution fiable à ceux qui
+                            souhaitent investir de manière encadrée, en utilisant une crypto comme support de valeur,
+                            tout en construisant une 🤝 communauté engagée autour d’un projet durable et responsable.
+                        </p>
+                    </div>
                 </div>
             </section>
 

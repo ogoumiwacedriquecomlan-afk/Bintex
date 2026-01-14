@@ -60,13 +60,15 @@ BEGIN
   -- Récupérer le profil
   SELECT * INTO user_prof FROM public.profiles WHERE id = auth.uid();
 
-  -- CONDITION 1: Au moins un dépôt approuvé
-  SELECT EXISTS (
-    SELECT 1 FROM public.deposits WHERE user_id = auth.uid() AND status = 'approved'
-  ) INTO has_deposit;
-  
-  IF NOT has_deposit THEN
-    RAISE EXCEPTION 'Un dépôt minimum est requis pour effectuer un retrait.';
+  -- CONDITION 1: Au moins un dépôt approuvé (Sauf si skip_deposit_check est vrai)
+  IF NOT user_prof.skip_deposit_check THEN
+    SELECT EXISTS (
+      SELECT 1 FROM public.deposits WHERE user_id = auth.uid() AND status = 'approved'
+    ) INTO has_deposit;
+    
+    IF NOT has_deposit THEN
+      RAISE EXCEPTION 'Un dépôt minimum est requis pour effectuer un retrait.';
+    END IF;
   END IF;
 
   -- CONDITION 2: Au moins un pack payé

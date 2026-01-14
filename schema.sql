@@ -26,6 +26,7 @@ create table public.profiles (
   active_packs jsonb default '[]'::jsonb,
   transactions jsonb default '[]'::jsonb,
   role text default 'user',  -- 'user' ou 'admin'
+  skip_deposit_check boolean default false, -- [NEW]
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
 

@@ -391,10 +391,57 @@ ul {
     font-family: var(--font-main);
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
+/* Payment Selector */
+.pay-option {
+    cursor: pointer;
+    flex: 1;
+}
+
+.pay-option input {
+    display: none;
+}
+
+.pay-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+}
+
+.pay-card span {
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.pay-option input:checked+.pay-card {
     border-color: var(--primary-color);
+    background: rgba(212, 175, 55, 0.1);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.minimal-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.minimal-table th,
+.minimal-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.minimal-table th {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 /* Footer */

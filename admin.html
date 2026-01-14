@@ -57,7 +57,11 @@
 
 <body>
     <div class="admin-container">
-        <h1>Administration Bintex</h1>
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 2rem;">
+            <img src="images/logo.jpg" alt="Logo"
+                style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--gold);">
+            <h1 style="margin-bottom: 0;">Administration BIN<span class="text-gold">TEX</span></h1>
+        </div>
 
         <div id="diagnostics"
             style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 2rem; border: 1px dashed #8892b0; font-size: 0.85rem;">
@@ -204,7 +208,8 @@
                 return `
                 <div class="deposit-card">
                     <div>
-                        <strong>${d.amount.toLocaleString()} FCFA</strong> - ${d.transaction_id}<br>
+                        <strong style="color: var(--gold);">${d.amount.toLocaleString()} FCFA</strong> - ${d.transaction_id}<br>
+                        <small>Réseau: <strong>${(d.payment_method || 'moov').toUpperCase()}</strong></small> | 
                         <small>Expéditeur: ${d.sender_phone || 'N/A'}</small><br>
                         <small>Utilisateur: ${profile.name} (${profile.phone}) - ${new Date(d.created_at).toLocaleString()}</small>
                     </div>

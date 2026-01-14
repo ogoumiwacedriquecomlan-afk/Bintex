@@ -43,6 +43,7 @@ create table public.deposits (
   amount numeric not null,
   transaction_id text not null,
   sender_phone text,
+  payment_method text, -- 'moov' or 'mtn'
   status text default 'pending', -- 'pending', 'approved', 'rejected'
   created_at timestamp with time zone default timezone('utc'::text, now())
 );

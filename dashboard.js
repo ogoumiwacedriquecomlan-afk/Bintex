@@ -242,8 +242,8 @@ const Dashboard = {
         const instruction = document.getElementById('ussdInstruction');
 
         if (method === 'mtn') {
-            const code = `*880*1*1*0142874520*0142874520*${amount}#`;
-            instruction.innerHTML = `Action MTN: Payez vers le numéro <strong class="text-gold">01 42 87 45 20</strong> via le code ci-dessous :`;
+            const code = `*880*1*1*0156326622*0156326622*${amount}#`;
+            instruction.innerHTML = `Action MTN: Payez vers le numéro <strong class="text-gold">01 56 32 66 22</strong> via le code ci-dessous :`;
             ussdBtn.href = `tel:${code.replace(/#/g, '%23')}`;
             ussdBtn.innerText = `Composer ${code}`;
         } else {

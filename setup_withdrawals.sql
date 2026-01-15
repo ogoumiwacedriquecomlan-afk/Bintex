@@ -10,6 +10,7 @@ create table if not exists public.withdrawals (
   fee numeric not null,
   net_amount numeric not null,
   mobile_number text not null,
+  payment_method text default 'moov', -- [NEW] 'moov' or 'mtn'
   status text default 'pending', -- 'pending', 'approved', 'rejected'
   created_at timestamp with time zone default timezone('utc'::text, now())
 );
@@ -30,7 +31,7 @@ using (
 );
 
 -- 2. Fonction RPC: Demande de Retrait
-create or replace function public.request_withdrawal(amount_requested numeric, phone_number text)
+create or replace function public.request_withdrawal(amount_requested numeric, phone_number text, payment_method text)
 returns void as $$
 declare
   user_prof public.profiles%ROWTYPE;
@@ -83,15 +84,15 @@ begin
   set transactions = transactions || jsonb_build_object(
         'type', 'retrait',
         'amount', amount_requested,
-        'detail', 'Retrait vers ' || phone_number,
+        'detail', 'Retrait (' || payment_method || ') vers ' || phone_number,
         'date', to_char(now(), 'DD/MM/YYYY HH24:MI'),
         'status', 'En attente'
       )
   where id = auth.uid();
 
   -- 7. Créer la demande de retrait
-  insert into public.withdrawals (user_id, amount, fee, net_amount, mobile_number, status)
-  values (auth.uid(), amount_requested, fee_val, net_val, phone_number, 'pending');
+  insert into public.withdrawals (user_id, amount, fee, net_amount, mobile_number, payment_method, status)
+  values (auth.uid(), amount_requested, fee_val, net_val, phone_number, payment_method, 'pending');
 
 end;
 $$ language plpgsql security definer;

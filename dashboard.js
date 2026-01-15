@@ -398,6 +398,7 @@ const Dashboard = {
         e.preventDefault();
         const amount = parseFloat(document.getElementById('wAmount').value);
         const phone = document.getElementById('wPhone').value;
+        const method = document.querySelector('input[name="wMethod"]:checked').value;
 
         if (amount < 2000) {
             alert("Le montant minimum est de 2000 FCFA.");
@@ -410,7 +411,8 @@ const Dashboard = {
         try {
             const { error } = await supabaseClient.rpc('request_withdrawal', {
                 amount_requested: amount,
-                phone_number: phone
+                phone_number: phone,
+                payment_method: method
             });
 
             if (error) throw error;

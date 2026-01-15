@@ -48,7 +48,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- 3. Update Withdrawal RPC with Conditions
-CREATE OR REPLACE FUNCTION public.request_withdrawal(amount_requested numeric, phone_number text)
+CREATE OR REPLACE FUNCTION public.request_withdrawal(amount_requested numeric, phone_number text, payment_method text)
 RETURNS void AS $$
 DECLARE
   user_prof public.profiles%ROWTYPE;
@@ -107,7 +107,7 @@ BEGIN
   SET transactions = transactions || jsonb_build_object(
         'type', 'retrait',
         'amount', amount_requested,
-        'detail', 'Retrait vers ' || phone_number,
+        'detail', 'Retrait (' || payment_method || ') vers ' || phone_number,
         'date', to_char(now(), 'DD/MM/YYYY HH24:MI'),
         'status', 'En attente',
         'id', 'withdraw_' || floor(extract(epoch from now())) -- Added ID for tracking
@@ -115,8 +115,8 @@ BEGIN
   WHERE id = auth.uid();
 
   -- 7. Créer la demande
-  INSERT INTO public.withdrawals (user_id, amount, fee, net_amount, mobile_number, status)
-  VALUES (auth.uid(), amount_requested, fee_val, net_val, phone_number, 'pending');
+  INSERT INTO public.withdrawals (user_id, amount, fee, net_amount, mobile_number, payment_method, status)
+  VALUES (auth.uid(), amount_requested, fee_val, net_val, phone_number, payment_method, 'pending');
 
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;

@@ -277,7 +277,7 @@
                     <div>
                         <strong>RETRAIT: ${w.amount.toLocaleString()} F</strong> <br>
                         <span style="color:#ff6b6b">Net à payer: ${w.net_amount.toLocaleString()} F</span><br>
-                        <span>Vers: ${w.mobile_number}</span><br>
+                        <span>Vers: ${w.mobile_number} (<strong>${(w.payment_method || 'moov').toUpperCase()}</strong>)</span><br>
                         <small>${profile.name} - ${new Date(w.created_at).toLocaleString()}</small>
                     </div>
                     <button class="btn-approve" onclick="approveWithdrawal('${w.id}')">Confirmer Paiement</button>

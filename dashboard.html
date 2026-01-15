@@ -765,12 +765,12 @@
             <!-- PAGE HISTORY -->
             <section id="page-history" class="dash-page">
                 <div class="panel">
-                    <h3><i class="ph ph-clock"></i> Historique</h3>
-                    <div class="table-responsive">
-                        <table class="history-table">
+                    <h3><i class="ph ph-clock"></i> Historique des Transactions</h3>
+                    <div style="overflow-x: auto; margin-top: 1rem;">
+                        <table class="minimal-table">
                             <thead>
                                 <tr>
-                                    <th>Type</th>
+                                    <th>Nature</th>
                                     <th>Détail</th>
                                     <th>Montant</th>
                                     <th>Date</th>
@@ -832,6 +832,9 @@
         </button>
         <button class="nav-item" onclick="Dashboard.switchPage('page-history')">
             <i class="ph ph-clock"></i> <span>Histoire</span>
+        </button>
+        <button class="nav-item" onclick="Dashboard.switchPage('page-about')">
+            <i class="ph ph-info"></i> <span>À Propos</span>
         </button>
     </div>
 

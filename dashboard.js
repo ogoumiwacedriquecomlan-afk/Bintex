@@ -267,6 +267,7 @@ const Dashboard = {
             amount: parseFloat(document.getElementById('depAmount').value),
             transaction_id: document.getElementById('depTxId').value,
             sender_phone: document.getElementById('senderNum').value,
+            sender_name: document.getElementById('senderName').value,
             payment_method: method,
             status: 'pending'
         };
